@@ -1,20 +1,21 @@
 package com.example.chester.puzzlepieces;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.View;
+import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
 public class PuzzleView extends View {
@@ -27,6 +28,8 @@ public class PuzzleView extends View {
   private Puzzle puzzle;
   private Bitmap imageBitmap;
   private Paint piecePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+  private WeakReference<Bitmap> bitmapWeakReference;
 
   public PuzzleView(Context context) {
     super(context);
@@ -52,8 +55,14 @@ public class PuzzleView extends View {
   }
 
   private void setupPuzzle() {
-    imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image);
+    loadBitmap();
+
+    //imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image);
     puzzle = new Puzzle(10, 5);
+  }
+
+  private void loadBitmap() {
+    new LoadBitmapTask(getResources(), this).execute(R.drawable.image);
   }
 
   private Bitmap createPieceFromNumber(int pieceNumber) {
@@ -350,6 +359,11 @@ public class PuzzleView extends View {
 
   @Override protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
+
+    if (imageBitmap == null) {
+      return;
+    }
+
     Timber.d("------------ onDraw()");
 
     canvas.drawBitmap(createPieceFromNumber(7), 20, 30, null);
@@ -363,5 +377,35 @@ public class PuzzleView extends View {
     canvas.drawBitmap(createPieceFromNumber(37), 718, 457, null);
     canvas.drawBitmap(createPieceFromNumber(42), 500, 457, null);
     canvas.drawBitmap(createPieceFromNumber(42), 800, 800, null);
+  }
+
+  private static class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
+    private Resources resources;
+    private WeakReference<PuzzleView> puzzleViewWeakReference;
+
+    LoadBitmapTask(Resources resources, PuzzleView puzzleView) {
+      this.resources = resources;
+      this.puzzleViewWeakReference = new WeakReference<>(puzzleView);
+    }
+
+    @Override protected Bitmap doInBackground(Integer... bitmapResource) {
+      BitmapFactory.Options options = new BitmapFactory.Options();
+      options.inJustDecodeBounds = true;
+      BitmapFactory.decodeResource(resources, bitmapResource[0], options);
+
+      options.inJustDecodeBounds = false;
+      return BitmapFactory.decodeResource(resources, bitmapResource[0], options);
+    }
+
+    @Override protected void onPostExecute(Bitmap bitmap) {
+      if (puzzleViewWeakReference.get() == null) {
+        return;
+      }
+
+      PuzzleView puzzleView = puzzleViewWeakReference.get();
+      puzzleView.imageBitmap = bitmap;
+      Timber.d("------- L O O O L ------ Bitmap: %s", bitmap);
+      puzzleView.invalidate();
+    }
   }
 }
