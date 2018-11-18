@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.View;
+import com.example.chester.puzzlepieces.utils.ScreenUtils;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
@@ -56,13 +57,17 @@ public class PuzzleView extends View {
 
   private void setupPuzzle() {
     loadBitmap();
-
-    //imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.image);
     puzzle = new Puzzle(10, 5);
   }
 
+  protected Size getPuzzleAreSize() {
+    Size screenSize = ScreenUtils.getScreenSize(getContext());
+    return new Size(Math.round(screenSize.getWidth() * 0.7f),
+        Math.round(screenSize.getHeight() * 0.7f));
+  }
+
   private void loadBitmap() {
-    new LoadBitmapTask(getResources(), this).execute(R.drawable.image);
+    new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
   }
 
   private Bitmap createPieceFromNumber(int pieceNumber) {
@@ -393,12 +398,26 @@ public class PuzzleView extends View {
       options.inJustDecodeBounds = true;
       BitmapFactory.decodeResource(resources, bitmapResource[0], options);
 
+      if (puzzleViewWeakReference.get() == null) {
+        return null;
+      }
+
+      Size puzzleAreaSize = puzzleViewWeakReference.get().getPuzzleAreSize();
+      options.inSampleSize = ScreenUtils.calculateInSampleSize(
+          options, puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
       options.inJustDecodeBounds = false;
+
       return BitmapFactory.decodeResource(resources, bitmapResource[0], options);
     }
 
     @Override protected void onPostExecute(Bitmap bitmap) {
+      if (bitmap == null) {
+        Timber.e("Bitmap is null.");
+        return;
+      }
+
       if (puzzleViewWeakReference.get() == null) {
+        Timber.e("PuzzleView instance is null.");
         return;
       }
 
