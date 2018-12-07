@@ -35,7 +35,6 @@ public class Puzzle {
 
     generateLeftAndRightSides();
     generateTopAndBottomSides();
-    explodePuzzle();
   }
 
   private int getRandomSideCurve() {
@@ -105,6 +104,8 @@ public class Puzzle {
       pieces.set(pieceNumber, piece);
     }
   }
+
+
 
   /**
    * Assigns every piece its random position on the "board".

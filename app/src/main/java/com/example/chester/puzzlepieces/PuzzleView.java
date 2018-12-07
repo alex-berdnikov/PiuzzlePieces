@@ -21,16 +21,14 @@ import timber.log.Timber;
 
 public class PuzzleView extends View {
 
-  final int PIECE_MIN_SQUARE_WIDTH = 125;
-  final int PIECE_MIN_SQUARE_HEIGHT = 125;
-  final int PIECE_CONVEX_CONCAVE_CUBIC_WIDTH = 16;
-  final int PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT = 24;
-
+  private int pieceScreenWidth;
+  private int pieceSquareHeight;
+  private int pieceConvexConcaveCubicWidth = 16;
+  private int pieceConvexConcaveCubicHeight = 24;
+  
   private Puzzle puzzle;
   private Bitmap imageBitmap;
   private Paint piecePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-  private WeakReference<Bitmap> bitmapWeakReference;
 
   public PuzzleView(Context context) {
     super(context);
@@ -56,8 +54,18 @@ public class PuzzleView extends View {
   }
 
   private void setupPuzzle() {
+    puzzle = new Puzzle(16, 9);
     loadBitmap();
-    puzzle = new Puzzle(10, 5);
+  }
+
+  private void setImageBitmap(Bitmap bitmap) {
+    imageBitmap = bitmap;
+    definePieceSquareSize();
+  }
+  
+  private void definePieceSquareSize() {
+    pieceScreenWidth = imageBitmap.getWidth() / puzzle.getPuzzleColumnsCount();
+    pieceSquareHeight = imageBitmap.getHeight() / puzzle.getPuzzleRowsCount();
   }
 
   protected Size getPuzzleAreSize() {
@@ -71,55 +79,6 @@ public class PuzzleView extends View {
   }
 
   private Bitmap createPieceFromNumber(int pieceNumber) {
-    return createPieceBitmap(pieceNumber);
-  }
-
-  private Size calculatePieceBitmapSize(int pieceNumber) {
-    Puzzle.Piece piece = puzzle.getPiece(pieceNumber);
-    int pieceWidth = PIECE_MIN_SQUARE_WIDTH;
-    int pieceHeight = PIECE_MIN_SQUARE_HEIGHT;
-
-    if (piece.getSideForm(Puzzle.Piece.SIDE_TOP) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceHeight += PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
-    }
-
-    if (piece.getSideForm(Puzzle.Piece.SIDE_BOTTOM) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceHeight += PIECE_MIN_SQUARE_HEIGHT;
-    }
-
-    if (piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceWidth += PIECE_MIN_SQUARE_WIDTH;
-    }
-
-    if (piece.getSideForm(Puzzle.Piece.SIDE_RIGHT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceWidth += PIECE_MIN_SQUARE_WIDTH;
-    }
-
-    return new Size(pieceWidth, pieceHeight);
-  }
-
-  private Point calculatePieceImageCoordinates(int pieceNumber) {
-    Puzzle.Piece piece = puzzle.getPiece(pieceNumber);
-
-    int pieceNumberInRow = pieceNumber % puzzle.getPuzzleColumnsCount();
-    int imageLeft = PIECE_MIN_SQUARE_WIDTH * pieceNumberInRow;
-    if (pieceNumberInRow != 0
-        && piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      imageLeft -= PIECE_CONVEX_CONCAVE_CUBIC_WIDTH;
-    }
-
-    int pieceNumberInColumn = pieceNumber / puzzle.getPuzzleColumnsCount();
-    int imageTop = PIECE_MIN_SQUARE_HEIGHT * pieceNumberInColumn;
-    if (pieceNumberInColumn != 0
-        && piece.getSideForm(Puzzle.Piece.SIDE_TOP) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      imageTop -= PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
-    }
-
-    return new Point(imageLeft, imageTop);
-  }
-
-  private Bitmap createPieceBitmap(int pieceNumber) {
-    // Calculate piece
     Path piecePath = createPiecePath(pieceNumber);
     Size pieceSize = calculatePieceBitmapSize(pieceNumber);
 
@@ -131,7 +90,10 @@ public class PuzzleView extends View {
     pieceCanvas.drawPath(piecePath, piecePaint);
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
+
     Point pieceImageCoordinates = calculatePieceImageCoordinates(pieceNumber);
+    Timber.d("----------imageBitmap width: %d, pieceNumber: %d, left side: %s, pieceImageCoordinates.x: %d, pieceSize.getWidth(): %d",
+        imageBitmap.getWidth(), pieceNumber, puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_LEFT), pieceImageCoordinates.x, pieceSize.getWidth());
     Bitmap pieceBitmap = Bitmap.createBitmap(
         imageBitmap,
         pieceImageCoordinates.x,
@@ -145,13 +107,56 @@ public class PuzzleView extends View {
     return cutPieceBitmap;
   }
 
+  private Size calculatePieceBitmapSize(int pieceNumber) {
+    Puzzle.Piece piece = puzzle.getPiece(pieceNumber);
+    int pieceWidth = pieceScreenWidth;
+    int pieceHeight = pieceSquareHeight;
+
+    if (piece.getSideForm(Puzzle.Piece.SIDE_TOP) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      pieceHeight += pieceConvexConcaveCubicHeight;
+    }
+
+    if (piece.getSideForm(Puzzle.Piece.SIDE_BOTTOM) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      pieceHeight += pieceSquareHeight;
+    }
+
+    if (piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      pieceWidth += pieceScreenWidth;
+    }
+
+    if (piece.getSideForm(Puzzle.Piece.SIDE_RIGHT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      pieceWidth += pieceScreenWidth;
+    }
+
+    return new Size(pieceWidth, pieceHeight);
+  }
+
+  private Point calculatePieceImageCoordinates(int pieceNumber) {
+    Puzzle.Piece piece = puzzle.getPiece(pieceNumber);
+
+    int pieceNumberInRow = pieceNumber % puzzle.getPuzzleColumnsCount();
+    int imageLeft = pieceScreenWidth * pieceNumberInRow;
+    if (pieceNumberInRow != 0
+        && piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      imageLeft -= pieceConvexConcaveCubicWidth;
+    }
+
+    int pieceNumberInColumn = pieceNumber / puzzle.getPuzzleColumnsCount();
+    int imageTop = pieceSquareHeight * pieceNumberInColumn;
+    if (pieceNumberInColumn != 0
+        && piece.getSideForm(Puzzle.Piece.SIDE_TOP) == Puzzle.Piece.SIDE_FORM_CONVEX) {
+      imageTop -= pieceConvexConcaveCubicHeight;
+    }
+
+    return new Point(imageLeft, imageTop);
+  }
+
   private Path createPiecePath(int pieceNumber) {
     Path pieceFormPath = new Path();
     final int START_X = 0;
     final int START_Y = 1;
 
     int[] pathStartPoint = setPathStartPoint(pieceFormPath, pieceNumber);
-    Timber.d("====================== pieceNumber: %d ====================== ", pieceNumber);
     pieceFormPath.moveTo(pathStartPoint[START_X], pathStartPoint[START_Y]);
     drawTopSide(pieceFormPath, pieceNumber, pathStartPoint[START_X], pathStartPoint[START_Y]);
     drawRightSide(pieceFormPath, pieceNumber, pathStartPoint[START_X], pathStartPoint[START_Y]);
@@ -173,7 +178,7 @@ public class PuzzleView extends View {
         startX = 0;
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        startX = PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+        startX = pieceConvexConcaveCubicHeight;
         break;
       default:
         throw new IllegalStateException("Piece side form has undefined value.");
@@ -189,7 +194,7 @@ public class PuzzleView extends View {
         startY = 0;
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        startY = PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+        startY = pieceConvexConcaveCubicHeight;
         break;
       default:
         throw new IllegalStateException("Piece side form has undefined value.");
@@ -206,30 +211,25 @@ public class PuzzleView extends View {
    */
   private void drawTopSide(Path path, int pieceNumber, int startX, int startY) {
     final int TOP_SIDE_FORM = puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_TOP);
-    Timber.d("-------- TOP ---------------- ");
-    Timber.d("-------- startX: %d, startY: %d", startX, startY);
-    Timber.d("-------- toX: %d, toY: %d", startX + PIECE_MIN_SQUARE_WIDTH, startY);
-    //path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY);
     switch (TOP_SIDE_FORM) {
       case Puzzle.Piece.SIDE_FORM_FLAT:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY);
-        Timber.d("-------- toX: %d, toY: %d", startX + PIECE_MIN_SQUARE_WIDTH, startY);
+        path.lineTo(startX + pieceScreenWidth, startY);
         break;
       case Puzzle.Piece.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH / 3, startY);
-        path.cubicTo(startX + (PIECE_MIN_SQUARE_WIDTH / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startX + ((PIECE_MIN_SQUARE_WIDTH / 3) * 2) + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startX + ((PIECE_MIN_SQUARE_WIDTH / 3) * 2), startY);
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY);
+        path.lineTo(startX + pieceScreenWidth / 3, startY);
+        path.cubicTo(startX + (pieceScreenWidth / 3) - pieceConvexConcaveCubicWidth,
+            startY + pieceConvexConcaveCubicHeight,
+            startX + ((pieceScreenWidth / 3) * 2) + pieceConvexConcaveCubicWidth,
+            startY + pieceConvexConcaveCubicHeight,
+            startX + ((pieceScreenWidth / 3) * 2), startY);
+        path.lineTo(startX + pieceScreenWidth, startY);
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH / 3, startY);
-        path.cubicTo(startX + (PIECE_MIN_SQUARE_WIDTH / 3) - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT, 0,
-            startX + ((PIECE_MIN_SQUARE_WIDTH / 3) * 2) + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT, 0,
-            startX + ((PIECE_MIN_SQUARE_WIDTH / 3) * 2), startY);
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY);
+        path.lineTo(startX + pieceScreenWidth / 3, startY);
+        path.cubicTo(startX + (pieceScreenWidth / 3) - pieceConvexConcaveCubicHeight, 0,
+            startX + ((pieceScreenWidth / 3) * 2) + pieceConvexConcaveCubicHeight, 0,
+            startX + ((pieceScreenWidth / 3) * 2), startY);
+        path.lineTo(startX + pieceScreenWidth, startY);
         break;
     }
   }
@@ -240,40 +240,35 @@ public class PuzzleView extends View {
    */
   private void drawRightSide(Path path, int pieceNumber, int startX, int startY) {
     final int RIGHT_SIDE = puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_RIGHT);
-    Timber.d("-------- RIGHT ---------------- ");
-    Timber.d("-------- startX: %d, startY: %d", startX, startY);
-    Timber.d("-------- toX: %d, toY: %d", startX + PIECE_MIN_SQUARE_WIDTH,
-        startY + PIECE_MIN_SQUARE_WIDTH);
-    //   path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH);
     switch (RIGHT_SIDE) {
       case Puzzle.Piece.SIDE_FORM_FLAT:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH);
+        path.lineTo(startX + pieceScreenWidth, startY + pieceScreenWidth);
         break;
       case Puzzle.Piece.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH / 3);
+        path.lineTo(startX + pieceScreenWidth, startY + pieceScreenWidth / 3);
         path.cubicTo(
-            startX + PIECE_MIN_SQUARE_WIDTH - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceScreenWidth - pieceConvexConcaveCubicHeight,
+            startY + (pieceScreenWidth / 3) - pieceConvexConcaveCubicWidth,
 
-            startX + PIECE_MIN_SQUARE_WIDTH - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) * 2 + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceScreenWidth - pieceConvexConcaveCubicHeight,
+            startY + (pieceScreenWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
 
-            startX + PIECE_MIN_SQUARE_WIDTH,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) * 2);
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH);
+            startX + pieceScreenWidth,
+            startY + (pieceScreenWidth / 3) * 2);
+        path.lineTo(startX + pieceScreenWidth, startY + pieceScreenWidth);
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH / 3);
+        path.lineTo(startX + pieceScreenWidth, startY + pieceScreenWidth / 3);
         path.cubicTo(
-            startX + PIECE_MIN_SQUARE_WIDTH + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceScreenWidth + pieceConvexConcaveCubicHeight,
+            startY + (pieceScreenWidth / 3) - pieceConvexConcaveCubicWidth,
 
-            startX + PIECE_MIN_SQUARE_WIDTH + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) * 2 + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceScreenWidth + pieceConvexConcaveCubicHeight,
+            startY + (pieceScreenWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
 
-            startX + PIECE_MIN_SQUARE_WIDTH,
-            startY + (PIECE_MIN_SQUARE_WIDTH / 3) * 2);
-        path.lineTo(startX + PIECE_MIN_SQUARE_WIDTH, startY + PIECE_MIN_SQUARE_WIDTH);
+            startX + pieceScreenWidth,
+            startY + (pieceScreenWidth / 3) * 2);
+        path.lineTo(startX + pieceScreenWidth, startY + pieceScreenWidth);
         break;
     }
   }
@@ -284,38 +279,35 @@ public class PuzzleView extends View {
    */
   private void drawBottomSide(Path path, int pieceNumber, int startX, int startY) {
     final int BOTTOM_SIDE = puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_BOTTOM);
-    Timber.d("-------- BOTTOM---------------- ");
-    Timber.d("-------- startX: %d, startY: %d", startX, startY);
-    Timber.d("-------- toX: %d, toY: %d", startX, startY + PIECE_MIN_SQUARE_WIDTH);
     switch (BOTTOM_SIDE) {
       case Puzzle.Piece.SIDE_FORM_FLAT:
-        path.lineTo(startX, startY + PIECE_MIN_SQUARE_WIDTH);
+        path.lineTo(startX, startY + pieceScreenWidth);
         break;
       case Puzzle.Piece.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + (PIECE_MIN_SQUARE_WIDTH / 3) * 2, startY + PIECE_MIN_SQUARE_WIDTH);
+        path.lineTo(startX + (pieceScreenWidth / 3) * 2, startY + pieceScreenWidth);
         path.cubicTo(
-            startX + (PIECE_MIN_SQUARE_WIDTH / 3) * 2 + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_MIN_SQUARE_HEIGHT - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + (pieceScreenWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startY + pieceSquareHeight - pieceConvexConcaveCubicHeight,
 
-            startX + (PIECE_MIN_SQUARE_HEIGHT / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_MIN_SQUARE_HEIGHT - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startY + pieceSquareHeight - pieceConvexConcaveCubicHeight,
 
-            startX + PIECE_MIN_SQUARE_WIDTH / 3,
-            startY + PIECE_MIN_SQUARE_HEIGHT);
-        path.lineTo(startX, startY + PIECE_MIN_SQUARE_WIDTH);
+            startX + pieceScreenWidth / 3,
+            startY + pieceSquareHeight);
+        path.lineTo(startX, startY + pieceScreenWidth);
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        path.lineTo(startX + (PIECE_MIN_SQUARE_WIDTH / 3) * 2, startY + PIECE_MIN_SQUARE_WIDTH);
+        path.lineTo(startX + (pieceScreenWidth / 3) * 2, startY + pieceScreenWidth);
         path.cubicTo(
-            startX + (PIECE_MIN_SQUARE_WIDTH / 3) * 2 + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_MIN_SQUARE_HEIGHT + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + (pieceScreenWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startY + pieceSquareHeight + pieceConvexConcaveCubicHeight,
 
-            startX + (PIECE_MIN_SQUARE_HEIGHT / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
-            startY + PIECE_MIN_SQUARE_HEIGHT + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startY + pieceSquareHeight + pieceConvexConcaveCubicHeight,
 
-            startX + PIECE_MIN_SQUARE_WIDTH / 3,
-            startY + PIECE_MIN_SQUARE_HEIGHT);
-        path.lineTo(startX, startY + PIECE_MIN_SQUARE_WIDTH);
+            startX + pieceScreenWidth / 3,
+            startY + pieceSquareHeight);
+        path.lineTo(startX, startY + pieceScreenWidth);
         break;
     }
   }
@@ -326,37 +318,34 @@ public class PuzzleView extends View {
    */
   private void drawLeftSide(Path path, int pieceNumber, int startX, int startY) {
     final int LEFT_SIDE = puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_LEFT);
-    Timber.d("-------- LEFT ---------------- ");
-    Timber.d("-------- startX: %d, startY: %d", startX, startY);
-    Timber.d("-------- toX: %d, toY: %d", startX, startY);
     switch (LEFT_SIDE) {
       case Puzzle.Piece.SIDE_FORM_FLAT:
         path.lineTo(startX, startY);
         break;
       case Puzzle.Piece.SIDE_FORM_CONCAVE:
-        path.lineTo(startX, startY + (PIECE_MIN_SQUARE_HEIGHT / 3) * 2);
+        path.lineTo(startX, startY + (pieceSquareHeight / 3) * 2);
         path.cubicTo(
-            startX + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + ((PIECE_MIN_SQUARE_HEIGHT / 3) * 2) + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceConvexConcaveCubicHeight,
+            startY + ((pieceSquareHeight / 3) * 2) + pieceConvexConcaveCubicWidth,
 
-            startX + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_HEIGHT / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX + pieceConvexConcaveCubicHeight,
+            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
 
             startX,
-            startY + (PIECE_MIN_SQUARE_HEIGHT / 3));
+            startY + (pieceSquareHeight / 3));
         path.lineTo(startX, startY);
         break;
       case Puzzle.Piece.SIDE_FORM_CONVEX:
-        path.lineTo(startX, startY + (PIECE_MIN_SQUARE_HEIGHT / 3) * 2);
+        path.lineTo(startX, startY + (pieceSquareHeight / 3) * 2);
         path.cubicTo(
-            startX - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + ((PIECE_MIN_SQUARE_HEIGHT / 3) * 2) + PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX - pieceConvexConcaveCubicHeight,
+            startY + ((pieceSquareHeight / 3) * 2) + pieceConvexConcaveCubicWidth,
 
-            startX - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
-            startY + (PIECE_MIN_SQUARE_HEIGHT / 3) - PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startX - pieceConvexConcaveCubicHeight,
+            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
 
             startX,
-            startY + (PIECE_MIN_SQUARE_HEIGHT / 3));
+            startY + (pieceSquareHeight / 3));
         path.lineTo(startX, startY);
         break;
     }
@@ -371,17 +360,30 @@ public class PuzzleView extends View {
 
     Timber.d("------------ onDraw()");
 
-    canvas.drawBitmap(createPieceFromNumber(7), 20, 30, null);
-    canvas.drawBitmap(createPieceFromNumber(12), 100, 123, null);
-    canvas.drawBitmap(createPieceFromNumber(0), 100, 100, null);
-    canvas.drawBitmap(createPieceFromNumber(17), 140, 130, null);
-    canvas.drawBitmap(createPieceFromNumber(1), 23, 421, null);
-    canvas.drawBitmap(createPieceFromNumber(20), 643, 33, null);
-    canvas.drawBitmap(createPieceFromNumber(35), 11, 780, null);
-    canvas.drawBitmap(createPieceFromNumber(23), 778, 90, null);
-    canvas.drawBitmap(createPieceFromNumber(37), 718, 457, null);
-    canvas.drawBitmap(createPieceFromNumber(42), 500, 457, null);
-    canvas.drawBitmap(createPieceFromNumber(42), 800, 800, null);
+    canvas.drawBitmap(createPieceFromNumber(0), 150, 10, null);
+    canvas.drawBitmap(createPieceFromNumber(1), 300, 10, null);
+    canvas.drawBitmap(createPieceFromNumber(2), 450, 10, null);
+    canvas.drawBitmap(createPieceFromNumber(3), 600, 10, null);
+    canvas.drawBitmap(createPieceFromNumber(4), 750, 10, null);
+
+    canvas.drawBitmap(createPieceFromNumber(6), 150, 170, null);
+    canvas.drawBitmap(createPieceFromNumber(7), 300, 170, null);
+    canvas.drawBitmap(createPieceFromNumber(8), 450, 170, null);
+    canvas.drawBitmap(createPieceFromNumber(9), 600, 170, null);
+    canvas.drawBitmap(createPieceFromNumber(10), 750, 170, null);
+    canvas.drawBitmap(createPieceFromNumber(11), 900, 170, null);
+
+    canvas.drawBitmap(createPieceFromNumber(16), 150, 340, null);
+    canvas.drawBitmap(createPieceFromNumber(17), 300, 340, null);
+    //canvas.drawBitmap(createPieceFromNumber(14), 450, 340, null);
+    //canvas.drawBitmap(createPieceFromNumber(15), 600, 340, null);
+    //canvas.drawBitmap(createPieceFromNumber(16), 750, 340, null);
+    //canvas.drawBitmap(createPieceFromNumber(17), 900, 340, null);
+    //canvas.drawBitmap(createPieceFromNumber(18), 150, 340, null);
+   /* canvas.drawBitmap(createPieceFromNumber(15), 450, 340, null);
+    canvas.drawBitmap(createPieceFromNumber(16), 600, 340, null);
+    canvas.drawBitmap(createPieceFromNumber(17), 750, 340, null);
+    canvas.drawBitmap(createPieceFromNumber(18), 900, 340, null);*/
   }
 
   private static class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
@@ -422,8 +424,7 @@ public class PuzzleView extends View {
       }
 
       PuzzleView puzzleView = puzzleViewWeakReference.get();
-      puzzleView.imageBitmap = bitmap;
-      Timber.d("------- L O O O L ------ Bitmap: %s", bitmap);
+      puzzleView.setImageBitmap(bitmap);
       puzzleView.invalidate();
     }
   }
