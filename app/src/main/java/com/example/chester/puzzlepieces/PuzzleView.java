@@ -92,8 +92,8 @@ public class PuzzleView extends View {
 
 
     Point pieceImageCoordinates = calculatePieceImageCoordinates(pieceNumber);
-    Timber.d("----------imageBitmap width: %d, pieceNumber: %d, left side: %s, pieceImageCoordinates.x: %d, pieceSize.getWidth(): %d",
-        imageBitmap.getWidth(), pieceNumber, puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_LEFT), pieceImageCoordinates.x, pieceSize.getWidth());
+    Timber.d("----------imageBitmap width: %d, pieceNumber: %d, left side: %s, pieceImageCoordinates.x: %d, pieceSize.getHeight(): %d, pieceSize.getWidth(): %d",
+        imageBitmap.getWidth(), pieceNumber, puzzle.getPiece(pieceNumber).getSideForm(Puzzle.Piece.SIDE_LEFT), pieceImageCoordinates.x, pieceSize.getHeight(), pieceSize.getWidth());
     Bitmap pieceBitmap = Bitmap.createBitmap(
         imageBitmap,
         pieceImageCoordinates.x,
@@ -117,15 +117,15 @@ public class PuzzleView extends View {
     }
 
     if (piece.getSideForm(Puzzle.Piece.SIDE_BOTTOM) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceHeight += pieceSquareHeight;
+      pieceHeight += pieceConvexConcaveCubicHeight;
     }
 
     if (piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceWidth += pieceScreenWidth;
+      pieceWidth += pieceConvexConcaveCubicHeight;
     }
 
     if (piece.getSideForm(Puzzle.Piece.SIDE_RIGHT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      pieceWidth += pieceScreenWidth;
+      pieceWidth += pieceConvexConcaveCubicHeight;
     }
 
     return new Size(pieceWidth, pieceHeight);
@@ -138,7 +138,7 @@ public class PuzzleView extends View {
     int imageLeft = pieceScreenWidth * pieceNumberInRow;
     if (pieceNumberInRow != 0
         && piece.getSideForm(Puzzle.Piece.SIDE_LEFT) == Puzzle.Piece.SIDE_FORM_CONVEX) {
-      imageLeft -= pieceConvexConcaveCubicWidth;
+      imageLeft -= pieceConvexConcaveCubicHeight;
     }
 
     int pieceNumberInColumn = pieceNumber / puzzle.getPuzzleColumnsCount();
@@ -361,29 +361,9 @@ public class PuzzleView extends View {
     Timber.d("------------ onDraw()");
 
     canvas.drawBitmap(createPieceFromNumber(0), 150, 10, null);
-    canvas.drawBitmap(createPieceFromNumber(1), 300, 10, null);
-    canvas.drawBitmap(createPieceFromNumber(2), 450, 10, null);
-    canvas.drawBitmap(createPieceFromNumber(3), 600, 10, null);
-    canvas.drawBitmap(createPieceFromNumber(4), 750, 10, null);
-
-    canvas.drawBitmap(createPieceFromNumber(6), 150, 170, null);
-    canvas.drawBitmap(createPieceFromNumber(7), 300, 170, null);
-    canvas.drawBitmap(createPieceFromNumber(8), 450, 170, null);
-    canvas.drawBitmap(createPieceFromNumber(9), 600, 170, null);
-    canvas.drawBitmap(createPieceFromNumber(10), 750, 170, null);
-    canvas.drawBitmap(createPieceFromNumber(11), 900, 170, null);
-
-    canvas.drawBitmap(createPieceFromNumber(16), 150, 340, null);
-    canvas.drawBitmap(createPieceFromNumber(17), 300, 340, null);
-    //canvas.drawBitmap(createPieceFromNumber(14), 450, 340, null);
-    //canvas.drawBitmap(createPieceFromNumber(15), 600, 340, null);
-    //canvas.drawBitmap(createPieceFromNumber(16), 750, 340, null);
-    //canvas.drawBitmap(createPieceFromNumber(17), 900, 340, null);
-    //canvas.drawBitmap(createPieceFromNumber(18), 150, 340, null);
-   /* canvas.drawBitmap(createPieceFromNumber(15), 450, 340, null);
-    canvas.drawBitmap(createPieceFromNumber(16), 600, 340, null);
-    canvas.drawBitmap(createPieceFromNumber(17), 750, 340, null);
-    canvas.drawBitmap(createPieceFromNumber(18), 900, 340, null);*/
+    canvas.drawBitmap(createPieceFromNumber(16), 150, 96, null);
+    canvas.drawBitmap(createPieceFromNumber(32), 150, 214, null);
+    canvas.drawBitmap(createPieceFromNumber(48), 150, 314, null);
   }
 
   private static class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
