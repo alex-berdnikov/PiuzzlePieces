@@ -1,4 +1,4 @@
-package com.example.chester.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class PuzzleUnitTest {
   }
 
   @Test
-  public void allPiecesInPlace() throws Exception {
+  public void allPiecesInPlace() {
     for (int pieceNumber = 0; pieceNumber < puzzle.getPiecesCount(); pieceNumber++) {
       assertNotNull(puzzle.getPiece(pieceNumber));
     }

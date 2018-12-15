@@ -1,4 +1,4 @@
-package com.example.chester.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,7 +15,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.View;
-import com.example.chester.puzzlepieces.utils.ScreenUtils;
+import com.example.alexberdnikov.puzzlepieces.utils.ScreenUtils;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
@@ -37,23 +37,20 @@ public class PuzzleView extends View {
   public PuzzleView(Context context,
       @Nullable AttributeSet attrs) {
     super(context, attrs);
-    setupPuzzle();
   }
 
   public PuzzleView(Context context,
       @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    setupPuzzle();
   }
 
   public PuzzleView(Context context,
       @Nullable AttributeSet attrs, int defStyleAttr,
       int defStyleRes) {
     super(context, attrs, defStyleAttr, defStyleRes);
-    setupPuzzle();
   }
 
-  private void setupPuzzle() {
+  public void setupPuzzle() {
     puzzle = new Puzzle(16, 9);
     loadBitmap();
   }
@@ -358,12 +355,12 @@ public class PuzzleView extends View {
       return;
     }
 
-    Timber.d("------------ onDraw()");
+    //puzzle.getPiecesCount();
 
     canvas.drawBitmap(createPieceFromNumber(0), 150, 10, null);
     canvas.drawBitmap(createPieceFromNumber(16), 150, 96, null);
-    canvas.drawBitmap(createPieceFromNumber(32), 150, 214, null);
-    canvas.drawBitmap(createPieceFromNumber(48), 150, 314, null);
+    canvas.drawBitmap(createPieceFromNumber(32), 150, 217, null);
+    canvas.drawBitmap(createPieceFromNumber(48), 150, 364, null);
   }
 
   private static class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {

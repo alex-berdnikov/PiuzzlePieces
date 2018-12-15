@@ -1,4 +1,4 @@
-package com.example.chester.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

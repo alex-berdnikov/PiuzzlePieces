@@ -1,4 +1,4 @@
-package com.example.chester.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces;
 
 import android.app.Application;
 import com.squareup.leakcanary.LeakCanary;

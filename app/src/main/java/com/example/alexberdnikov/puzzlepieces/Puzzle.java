@@ -1,16 +1,16 @@
-package com.example.chester.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_BOTTOM;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONCAVE;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONVEX;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_FORM_FLAT;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_LEFT;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_RIGHT;
-import static com.example.chester.puzzlepieces.Puzzle.Piece.SIDE_TOP;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_BOTTOM;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONCAVE;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONVEX;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_FLAT;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_LEFT;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_RIGHT;
+import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_TOP;
 
 
 public class Puzzle {
@@ -104,8 +104,6 @@ public class Puzzle {
       pieces.set(pieceNumber, piece);
     }
   }
-
-
 
   /**
    * Assigns every piece its random position on the "board".

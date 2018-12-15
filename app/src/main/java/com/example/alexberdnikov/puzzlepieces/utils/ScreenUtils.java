@@ -1,4 +1,4 @@
-package com.example.chester.puzzlepieces.utils;
+package com.example.alexberdnikov.puzzlepieces.utils;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
