@@ -1,5 +1,6 @@
 package com.example.alexberdnikov.puzzlepieces;
 
+import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,16 +1,16 @@
-package com.example.alexberdnikov.puzzlepieces;
+package com.example.alexberdnikov.puzzlepieces.view;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_BOTTOM;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONCAVE;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_CONVEX;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_FORM_FLAT;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_LEFT;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_RIGHT;
-import static com.example.alexberdnikov.puzzlepieces.Puzzle.Piece.SIDE_TOP;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_BOTTOM;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_FORM_CONCAVE;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_FORM_CONVEX;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_FORM_FLAT;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_LEFT;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_RIGHT;
+import static com.example.alexberdnikov.puzzlepieces.view.Puzzle.Piece.SIDE_TOP;
 
 
 public class Puzzle {
