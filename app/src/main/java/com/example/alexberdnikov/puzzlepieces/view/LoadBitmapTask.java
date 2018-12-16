@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Size;
 import com.example.alexberdnikov.puzzlepieces.utils.ScreenUtils;
-import com.example.alexberdnikov.puzzlepieces.view.PuzzleView;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
 
@@ -48,7 +47,6 @@ class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
     }
 
     PuzzleView puzzleView = puzzleViewWeakReference.get();
-    puzzleView.setImageBitmap(bitmap);
-    puzzleView.invalidate();
+    puzzleView.onImageLoaded(bitmap);
   }
 }

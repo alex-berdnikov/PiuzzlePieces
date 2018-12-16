@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPuzzle;
+import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesGenerator;
 import com.example.alexberdnikov.puzzlepieces.view.PuzzleView;
 import timber.log.Timber;
 
@@ -22,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Timber.d("-------- onCreate() --> %s", getRequestedOrientation());
     setContentView(R.layout.activity_main);
     ButterKnife.bind(this);
   }
@@ -33,11 +34,10 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void setupUi() {
-    Timber.d("--- setupUi();");
     View decorView = getWindow().getDecorView();
     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-    puzzleView.setupPuzzle();
+    puzzleView.setupPuzzle(new JigsawPuzzle(this,16, 9));
   }
 }
