@@ -3,12 +3,14 @@ package com.example.alexberdnikov.puzzlepieces.view.jigsaw;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.Size;
+import com.example.alexberdnikov.puzzlepieces.BuildConfig;
 import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
 
 public class JigsawPuzzle extends Puzzle {
@@ -31,7 +33,7 @@ public class JigsawPuzzle extends Puzzle {
     pieceSquareHeight = getPuzzleAreaSize().getHeight() / piecesGenerator.getPuzzleRowsCount();
   }
 
-  public Bitmap createPieceFromNumber(int pieceNumber) {
+  public Bitmap createPieceImage(int pieceNumber) {
     Path piecePath = createPiecePath(pieceNumber);
     Size pieceSize = calculatePieceBitmapSize(pieceNumber);
 
@@ -42,8 +44,8 @@ public class JigsawPuzzle extends Puzzle {
     piecePaint.setColor(0xFF000000);
     pieceCanvas.drawPath(piecePath, piecePaint);
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-
     Point pieceImageCoordinates = calculatePieceImageCoordinates(pieceNumber);
+
     Bitmap pieceBitmap = Bitmap.createBitmap(
         getImageBitmap(),
         pieceImageCoordinates.x,
@@ -54,6 +56,15 @@ public class JigsawPuzzle extends Puzzle {
     pieceCanvas.drawBitmap(pieceBitmap, 0, 0, piecePaint);
     piecePaint.setXfermode(null);
 
+    if (BuildConfig.DEBUG) {
+      piecePaint.setAntiAlias(true);
+      piecePaint.setColor(Color.WHITE);
+      piecePaint.setTextSize(34);
+      piecePaint.setStyle(Paint.Style.FILL);
+      pieceCanvas.drawText(Integer.toString(pieceNumber),
+          pieceSize.getWidth() / 2 - 20, pieceSize.getHeight() / 2, piecePaint);
+    }
+
     return cutPieceBitmap;
   }
 
@@ -62,19 +73,23 @@ public class JigsawPuzzle extends Puzzle {
     int pieceWidth = pieceSquareWidth;
     int pieceHeight = pieceSquareHeight;
 
-    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       pieceHeight += pieceConvexConcaveCubicHeight;
     }
 
-    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       pieceHeight += pieceConvexConcaveCubicHeight;
     }
 
-    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       pieceWidth += pieceConvexConcaveCubicHeight;
     }
 
-    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+    if (pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       pieceWidth += pieceConvexConcaveCubicHeight;
     }
 
@@ -87,14 +102,16 @@ public class JigsawPuzzle extends Puzzle {
     int pieceNumberInRow = pieceNumber % piecesGenerator.getPuzzleColumnsCount();
     int imageLeft = pieceSquareWidth * pieceNumberInRow;
     if (pieceNumberInRow != 0
-        && pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+        && pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       imageLeft -= pieceConvexConcaveCubicHeight;
     }
 
     int pieceNumberInColumn = pieceNumber / piecesGenerator.getPuzzleColumnsCount();
     int imageTop = pieceSquareHeight * pieceNumberInColumn;
     if (pieceNumberInColumn != 0
-        && pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP) == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
+        && pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP)
+        == PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX) {
       imageTop -= pieceConvexConcaveCubicHeight;
     }
 
@@ -122,7 +139,8 @@ public class JigsawPuzzle extends Puzzle {
   }
 
   private int[] setPathStartPoint(Path path, int pieceNumber) {
-    final int leftSide = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT);
+    final int leftSide = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT);
     final int startX;
     switch (leftSide) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
@@ -138,7 +156,8 @@ public class JigsawPuzzle extends Puzzle {
         throw new IllegalStateException("PieceDescription side form has undefined value.");
     }
 
-    final int topSideForm = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP);
+    final int topSideForm = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP);
     final int startY;
     switch (topSideForm) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
@@ -164,7 +183,8 @@ public class JigsawPuzzle extends Puzzle {
    * @param path path to draw
    */
   private void drawTopSide(Path path, int pieceNumber, int startX, int startY) {
-    final int TOP_SIDE_FORM = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP);
+    final int TOP_SIDE_FORM = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP);
     switch (TOP_SIDE_FORM) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
         path.lineTo(startX + pieceSquareWidth, startY);
@@ -193,36 +213,37 @@ public class JigsawPuzzle extends Puzzle {
    * {@link #drawBottomSide(Path, int, int, int)}.
    */
   private void drawRightSide(Path path, int pieceNumber, int startX, int startY) {
-    final int RIGHT_SIDE = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT);
+    final int RIGHT_SIDE = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT);
     switch (RIGHT_SIDE) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareWidth);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
       case PiecesGenerator.PieceDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareWidth / 3);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3);
         path.cubicTo(
             startX + pieceSquareWidth - pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareWidth / 3) - pieceConvexConcaveCubicWidth,
+            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
 
             startX + pieceSquareWidth - pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startY + (pieceSquareHeight / 3) * 2 + pieceConvexConcaveCubicWidth,
 
             startX + pieceSquareWidth,
-            startY + (pieceSquareWidth / 3) * 2);
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareWidth);
+            startY + (pieceSquareHeight / 3) * 2);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
       case PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareWidth / 3);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3);
         path.cubicTo(
             startX + pieceSquareWidth + pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareWidth / 3) - pieceConvexConcaveCubicWidth,
+            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
 
             startX + pieceSquareWidth + pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startY + (pieceSquareHeight / 3) * 2 + pieceConvexConcaveCubicWidth,
 
             startX + pieceSquareWidth,
-            startY + (pieceSquareWidth / 3) * 2);
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareWidth);
+            startY + (pieceSquareHeight / 3) * 2);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
     }
   }
@@ -232,13 +253,14 @@ public class JigsawPuzzle extends Puzzle {
    * {@link #drawLeftSide(Path, int, int, int)}.
    */
   private void drawBottomSide(Path path, int pieceNumber, int startX, int startY) {
-    final int BOTTOM_SIDE = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM);
+    final int BOTTOM_SIDE = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM);
     switch (BOTTOM_SIDE) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
-        path.lineTo(startX, startY + pieceSquareWidth);
+        path.lineTo(startX, startY + pieceSquareHeight);
         break;
       case PiecesGenerator.PieceDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareWidth);
+        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareHeight);
         path.cubicTo(
             startX + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
             startY + pieceSquareHeight - pieceConvexConcaveCubicHeight,
@@ -248,10 +270,10 @@ public class JigsawPuzzle extends Puzzle {
 
             startX + pieceSquareWidth / 3,
             startY + pieceSquareHeight);
-        path.lineTo(startX, startY + pieceSquareWidth);
+        path.lineTo(startX, startY + pieceSquareHeight);
         break;
       case PiecesGenerator.PieceDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareWidth);
+        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareHeight);
         path.cubicTo(
             startX + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
             startY + pieceSquareHeight + pieceConvexConcaveCubicHeight,
@@ -261,7 +283,7 @@ public class JigsawPuzzle extends Puzzle {
 
             startX + pieceSquareWidth / 3,
             startY + pieceSquareHeight);
-        path.lineTo(startX, startY + pieceSquareWidth);
+        path.lineTo(startX, startY + pieceSquareHeight);
         break;
     }
   }
@@ -271,7 +293,8 @@ public class JigsawPuzzle extends Puzzle {
    * in a series of methods drawing piece sides.
    */
   private void drawLeftSide(Path path, int pieceNumber, int startX, int startY) {
-    final int LEFT_SIDE = piecesGenerator.getPiece(pieceNumber).getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT);
+    final int LEFT_SIDE = piecesGenerator.getPiece(pieceNumber)
+        .getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT);
     switch (LEFT_SIDE) {
       case PiecesGenerator.PieceDescription.SIDE_FORM_FLAT:
         path.lineTo(startX, startY);
