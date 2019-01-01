@@ -1,5 +1,6 @@
 package com.example.alexberdnikov.puzzlepieces.jigsaw;
 
+import com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece;
 import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class JigsawPiecesGeneratorUnitTest {
   @Test
   public void allPiecesInPlace() {
     for (int pieceNumber = 0; pieceNumber < piecesGenerator.getPiecesCount(); pieceNumber++) {
-      assertNotNull(piecesGenerator.getPiece(pieceNumber));
+      assertNotNull(piecesGenerator.getSidesDescription(pieceNumber));
     }
   }
 
@@ -34,38 +35,38 @@ public class JigsawPiecesGeneratorUnitTest {
     int piecesCount = piecesGenerator.getPiecesCount();
     for (int pieceNumber = 0; pieceNumber < piecesCount; pieceNumber++) {
 
-      PiecesGenerator.PieceDescription pieceDescription = piecesGenerator.getPiece(pieceNumber);
+      JigsawPiece.SidesDescription sidesDescription = piecesGenerator.getSidesDescription(pieceNumber);
 
       // First piece in every row must have left side flat,
       // all other pieces have their left sides curvy
       if (pieceNumber % PUZZLE_COLUMNS == 0) {
-        assertEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_LEFT), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       } else {
-        assertNotEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_LEFT), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertNotEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_LEFT), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       }
 
       // Last piece in every row must have its right side flat,
       // other pieces have it curvy
       if (pieceNumber % PUZZLE_COLUMNS == PUZZLE_COLUMNS - 1) {
-        assertEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_RIGHT), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       } else {
-        assertNotEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_RIGHT), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertNotEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_RIGHT), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       }
 
       // Every piece in the top row must have top side flat,
       // others have it curvy
       if (pieceNumber < PUZZLE_COLUMNS) {
-        assertEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_TOP), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       } else {
-        assertNotEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_TOP), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertNotEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_TOP), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       }
 
       // Every piece in the bottom row must have top side flat,
       // others have it curvy
       if (piecesCount - PUZZLE_COLUMNS <= pieceNumber) {
-        assertEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_BOTTOM), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       } else {
-        assertNotEquals(pieceDescription.getSideForm(PiecesGenerator.PieceDescription.SIDE_BOTTOM), PiecesGenerator.PieceDescription.SIDE_FORM_FLAT);
+        assertNotEquals(sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_BOTTOM), JigsawPiece.SidesDescription.SIDE_FORM_FLAT);
       }
     }
   }

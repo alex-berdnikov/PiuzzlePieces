@@ -14,7 +14,7 @@ public class JigsawPiecesPicker extends PiecesPicker {
     super(pieces, screenWidth, screenHeight);
     for (final Piece piece : pieces) {
       connectedPiecesBlocks.add(new HashSet<JigsawPiece>() {{
-        add(new JigsawPiece(piece));
+        add((JigsawPiece) piece);
       }});
     }
   }
@@ -34,12 +34,14 @@ public class JigsawPiecesPicker extends PiecesPicker {
   }
 
   @Override protected void handlePiecesConnections(Piece draggedPiece) {
-    //Set<Piece> draggedPieceGroup = getGroupWithPiece(draggedPiece);
-    //handleConnectionForPieces(draggedPieceGroup);
+    Set<JigsawPiece> draggedPieceGroup = getGroupWithPiece((JigsawPiece) draggedPiece);
+    handleConnectionForPieces(draggedPieceGroup);
   }
 
-  private void handleConnectionForPieces(Set<Piece> pieces) {
-
+  private void handleConnectionForPieces(Set<JigsawPiece> piecesGroup) {
+    for (JigsawPiece piece : piecesGroup) {
+      
+    }
   }
 
   private Set<JigsawPiece> getGroupWithPiece(JigsawPiece piece) {

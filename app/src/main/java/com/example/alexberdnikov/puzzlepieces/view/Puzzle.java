@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class Puzzle {
   private Bitmap imageBitmap;
   private Size puzzleAreaSize;
+  private Size screenSize;
 
   private List<Piece> pieces = new LinkedList<>();
   private PiecesPicker piecesPicker;
@@ -19,10 +20,9 @@ public abstract class Puzzle {
   }
 
   private void calculateAndSetupPuzzleArea(Context context) {
-    Size screenSize = ScreenUtils.getScreenSize(context);
+    this.screenSize = ScreenUtils.getScreenSize(context);
     puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
         Math.round(screenSize.getHeight() * 0.8f));
-    piecesPicker = createPiecesPicker(screenSize.getWidth(), screenSize.getHeight());
   }
 
   protected Bitmap getImageBitmap() {
@@ -55,6 +55,10 @@ public abstract class Puzzle {
 
   void onTouchEnd(float x, float y) {
     piecesPicker.onTouchEnd(x, y);
+  }
+
+  protected void onGenerated() {
+    piecesPicker = createPiecesPicker(screenSize.getWidth(), screenSize.getHeight());
   }
 
   abstract public void generate();
