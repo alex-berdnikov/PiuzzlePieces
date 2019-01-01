@@ -9,7 +9,6 @@ import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.alexberdnikov.puzzlepieces.R;
-import timber.log.Timber;
 
 public class PuzzleView extends View {
 
@@ -57,7 +56,6 @@ public class PuzzleView extends View {
   @Override public boolean onTouchEvent(MotionEvent event) {
     switch (event.getAction()) {
       case MotionEvent.ACTION_DOWN:
-        Timber.d("x: %f, y: %f", event.getX(), event.getY());
         puzzle.onTouchStart(event.getX(), event.getY());
         break;
       case MotionEvent.ACTION_MOVE:
@@ -79,7 +77,7 @@ public class PuzzleView extends View {
     super.onDraw(canvas);
 
     for (Piece piece : puzzle.getPieces()) {
-      canvas.drawBitmap(piece.pieceImage, piece.x, piece.y, null);
+      canvas.drawBitmap(piece.getPieceImage(), piece.getX(), piece.getY(), null);
     }
   }
 }

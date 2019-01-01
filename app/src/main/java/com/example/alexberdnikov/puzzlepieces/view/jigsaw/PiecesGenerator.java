@@ -105,11 +105,11 @@ public class PiecesGenerator {
     }
   }
 
-  public int getPuzzleColumnsCount() {
+  int getPuzzleColumnsCount() {
     return puzzleColumnsCount;
   }
 
-  public int getPuzzleRowsCount() {
+  int getPuzzleRowsCount() {
     return puzzleRowsCount;
   }
 

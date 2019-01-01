@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.Size;
 import com.example.alexberdnikov.puzzlepieces.BuildConfig;
+import com.example.alexberdnikov.puzzlepieces.view.Piece;
+import com.example.alexberdnikov.puzzlepieces.view.PiecesPicker;
 import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
 
 public class JigsawPuzzle extends Puzzle {
@@ -33,7 +35,11 @@ public class JigsawPuzzle extends Puzzle {
     pieceSquareHeight = getPuzzleAreaSize().getHeight() / piecesGenerator.getPuzzleRowsCount();
   }
 
-  public Bitmap createPieceImage(int pieceNumber) {
+  @Override protected Piece createPiece(int number, int x, int y) {
+      return new Piece(createPieceImage(number), number, x, y);
+  }
+
+  private Bitmap createPieceImage(int pieceNumber) {
     Path piecePath = createPiecePath(pieceNumber);
     Size pieceSize = calculatePieceBitmapSize(pieceNumber);
 
@@ -66,6 +72,18 @@ public class JigsawPuzzle extends Puzzle {
     }
 
     return cutPieceBitmap;
+  }
+
+  @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {
+    return new JigsawPiecesPicker(
+        getPieces(), screenWidth, screenHeight);
+  }
+
+  @Override public void generate() {
+    for (int i = 0; i < getPiecesCount(); i++) {
+      // Just put the pieces consequently
+      getPieces().add(createPiece(i, (i % 16 ) * (96 + 18) + 40, (i / 16) * (96 + 18) + 40));
+    }
   }
 
   private Size calculatePieceBitmapSize(int pieceNumber) {

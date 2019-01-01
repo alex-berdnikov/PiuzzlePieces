@@ -10,26 +10,19 @@ import java.util.List;
 public abstract class Puzzle {
   private Bitmap imageBitmap;
   private Size puzzleAreaSize;
+
   private List<Piece> pieces = new LinkedList<>();
   private PiecesPicker piecesPicker;
 
-
   public Puzzle(Context context) {
-    calculateAndSetPuzzleArea(context);
+    calculateAndSetupPuzzleArea(context);
   }
 
-  void generate() {
-    for (int i = 0; i < getPiecesCount(); i++) {
-      // Just put the pieces consequently
-      pieces.add(createPiece(i, (i % 16 ) * (96 + 18) + 40, (i / 16) * (96 + 18) + 40));
-    }
-  }
-
-  private void calculateAndSetPuzzleArea(Context context) {
+  private void calculateAndSetupPuzzleArea(Context context) {
     Size screenSize = ScreenUtils.getScreenSize(context);
     puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
         Math.round(screenSize.getHeight() * 0.8f));
-    piecesPicker = new PiecesPicker(pieces, puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
+    piecesPicker = createPiecesPicker(screenSize.getWidth(), screenSize.getHeight());
   }
 
   protected Bitmap getImageBitmap() {
@@ -44,11 +37,11 @@ public abstract class Puzzle {
     this.imageBitmap = imageBitmap;
   }
 
-  private Piece createPiece(int number, int x, int y) {
-    return new Piece(createPieceImage(number), number, x, y);
+  public int getPiecesCount() {
+    return pieces.size();
   }
 
-  List<Piece> getPieces() {
+  protected List<Piece> getPieces() {
     return pieces;
   }
 
@@ -64,6 +57,7 @@ public abstract class Puzzle {
     piecesPicker.onTouchEnd(x, y);
   }
 
-  abstract public int getPiecesCount();
-  abstract public Bitmap createPieceImage(int pieceNumber);
+  abstract public void generate();
+  abstract protected Piece createPiece(int number, int x, int y);
+  abstract protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight);
 }
