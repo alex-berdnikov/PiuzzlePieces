@@ -5,7 +5,7 @@ import java.util.Locale;
 
 abstract public class Piece {
   private final Bitmap pieceImage;
-  public final int number;
+  private final int number;
   private int x;
   private int y;
 
@@ -28,7 +28,7 @@ abstract public class Piece {
     return x;
   }
 
-  void setX(int x) {
+  public void setX(int x) {
     this.x = x;
   }
 
@@ -36,7 +36,7 @@ abstract public class Piece {
     return y;
   }
 
-  void setY(int y) {
+  public void setY(int y) {
     this.y = y;
   }
 
@@ -45,6 +45,10 @@ abstract public class Piece {
   }
 
   @Override public String toString() {
-    return String.format(Locale.getDefault(), "[#%d, x: %d, y: %d]", number, x, y);
+    return String.format(Locale.getDefault(), "[#%d, x: %d, y: %d]", getNumber(), x, y);
+  }
+
+  public int getNumber() {
+    return number;
   }
 }

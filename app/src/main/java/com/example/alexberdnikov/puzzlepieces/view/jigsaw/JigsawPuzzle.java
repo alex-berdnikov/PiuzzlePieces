@@ -18,8 +18,6 @@ import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
 public class JigsawPuzzle extends Puzzle {
   private int pieceSquareWidth;
   private int pieceSquareHeight;
-  private int pieceConvexConcaveCubicWidth = 16;
-  private int pieceConvexConcaveCubicHeight = 24;
 
   private PiecesGenerator piecesGenerator;
   private Paint piecePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -75,7 +73,7 @@ public class JigsawPuzzle extends Puzzle {
       piecePaint.setTextSize(34);
       piecePaint.setStyle(Paint.Style.FILL);
       pieceCanvas.drawText(Integer.toString(pieceNumber),
-          pieceSize.getWidth() / 2 - 20, pieceSize.getHeight() / 2, piecePaint);
+          pieceSize.getWidth() / 2f - 20, pieceSize.getHeight() / 2f, piecePaint);
     }
 
     return cutPieceBitmap;
@@ -101,22 +99,22 @@ public class JigsawPuzzle extends Puzzle {
 
     if (sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_TOP)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceHeight += pieceConvexConcaveCubicHeight;
+      pieceHeight += JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     if (sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_BOTTOM)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceHeight += pieceConvexConcaveCubicHeight;
+      pieceHeight += JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     if (sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_LEFT)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceWidth += pieceConvexConcaveCubicHeight;
+      pieceWidth += JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     if (sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_RIGHT)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceWidth += pieceConvexConcaveCubicHeight;
+      pieceWidth += JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     return new Size(pieceWidth, pieceHeight);
@@ -131,7 +129,7 @@ public class JigsawPuzzle extends Puzzle {
     if (pieceNumberInRow != 0
         && sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_LEFT)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      imageLeft -= pieceConvexConcaveCubicHeight;
+      imageLeft -= JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     int pieceNumberInColumn = pieceNumber / piecesGenerator.getPuzzleColumnsCount();
@@ -139,7 +137,7 @@ public class JigsawPuzzle extends Puzzle {
     if (pieceNumberInColumn != 0
         && sidesDescription.getSideForm(JigsawPiece.SidesDescription.SIDE_TOP)
         == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      imageTop -= pieceConvexConcaveCubicHeight;
+      imageTop -= JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
     }
 
     return new Point(imageLeft, imageTop);
@@ -173,7 +171,7 @@ public class JigsawPuzzle extends Puzzle {
         startX = 0;
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        startX = pieceConvexConcaveCubicHeight;
+        startX = JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
         break;
       default:
         throw new IllegalStateException("SidesDescription side form has undefined value.");
@@ -190,7 +188,7 @@ public class JigsawPuzzle extends Puzzle {
         startY = 0;
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        startY = pieceConvexConcaveCubicHeight;
+        startY = JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
         break;
       default:
         throw new IllegalStateException("SidesDescription side form has undefined value.");
@@ -213,19 +211,22 @@ public class JigsawPuzzle extends Puzzle {
         path.lineTo(startX + pieceSquareWidth, startY);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + pieceSquareWidth / 3, startY);
-        path.cubicTo(startX + (pieceSquareWidth / 3) - pieceConvexConcaveCubicWidth,
-            startY + pieceConvexConcaveCubicHeight,
-            startX + ((pieceSquareWidth / 3) * 2) + pieceConvexConcaveCubicWidth,
-            startY + pieceConvexConcaveCubicHeight,
-            startX + ((pieceSquareWidth / 3) * 2), startY);
+        path.lineTo(startX + pieceSquareWidth / 3f, startY);
+        path.cubicTo(
+            startX + (pieceSquareWidth / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + ((pieceSquareWidth / 3f) * 2) + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startX + ((pieceSquareWidth / 3f) * 2), startY);
         path.lineTo(startX + pieceSquareWidth, startY);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX + pieceSquareWidth / 3, startY);
-        path.cubicTo(startX + (pieceSquareWidth / 3) - pieceConvexConcaveCubicHeight, 0,
-            startX + ((pieceSquareWidth / 3) * 2) + pieceConvexConcaveCubicHeight, 0,
-            startX + ((pieceSquareWidth / 3) * 2), startY);
+        path.lineTo(startX + pieceSquareWidth / 3f, startY);
+        path.cubicTo(
+            startX + (pieceSquareWidth / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT, 0,
+            startX + ((pieceSquareWidth / 3) * 2) + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            0,
+            startX + ((pieceSquareWidth / 3f) * 2), startY);
         path.lineTo(startX + pieceSquareWidth, startY);
         break;
     }
@@ -243,29 +244,29 @@ public class JigsawPuzzle extends Puzzle {
         path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3f);
         path.cubicTo(
-            startX + pieceSquareWidth - pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startX + pieceSquareWidth - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
-            startX + pieceSquareWidth - pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startX + pieceSquareWidth - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3) * 2 + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
             startX + pieceSquareWidth,
-            startY + (pieceSquareHeight / 3) * 2);
+            startY + (pieceSquareHeight / 3f) * 2);
         path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3);
+        path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight / 3f);
         path.cubicTo(
-            startX + pieceSquareWidth + pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startX + pieceSquareWidth + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
-            startX + pieceSquareWidth + pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) * 2 + pieceConvexConcaveCubicWidth,
+            startX + pieceSquareWidth + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3) * 2 + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
             startX + pieceSquareWidth,
-            startY + (pieceSquareHeight / 3) * 2);
+            startY + (pieceSquareHeight / 3f) * 2);
         path.lineTo(startX + pieceSquareWidth, startY + pieceSquareHeight);
         break;
     }
@@ -283,28 +284,28 @@ public class JigsawPuzzle extends Puzzle {
         path.lineTo(startX, startY + pieceSquareHeight);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareHeight);
+        path.lineTo(startX + (pieceSquareWidth / 3f) * 2, startY + pieceSquareHeight);
         path.cubicTo(
-            startX + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
-            startY + pieceSquareHeight - pieceConvexConcaveCubicHeight,
+            startX + (pieceSquareWidth / 3) * 2 + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + pieceSquareHeight - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
 
-            startX + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
-            startY + pieceSquareHeight - pieceConvexConcaveCubicHeight,
+            startX + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + pieceSquareHeight - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
 
-            startX + pieceSquareWidth / 3,
+            startX + pieceSquareWidth / 3f,
             startY + pieceSquareHeight);
         path.lineTo(startX, startY + pieceSquareHeight);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX + (pieceSquareWidth / 3) * 2, startY + pieceSquareHeight);
+        path.lineTo(startX + (pieceSquareWidth / 3f) * 2, startY + pieceSquareHeight);
         path.cubicTo(
-            startX + (pieceSquareWidth / 3) * 2 + pieceConvexConcaveCubicWidth,
-            startY + pieceSquareHeight + pieceConvexConcaveCubicHeight,
+            startX + (pieceSquareWidth / 3) * 2 + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + pieceSquareHeight + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
 
-            startX + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
-            startY + pieceSquareHeight + pieceConvexConcaveCubicHeight,
+            startX + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
+            startY + pieceSquareHeight + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
 
-            startX + pieceSquareWidth / 3,
+            startX + pieceSquareWidth / 3f,
             startY + pieceSquareHeight);
         path.lineTo(startX, startY + pieceSquareHeight);
         break;
@@ -323,29 +324,29 @@ public class JigsawPuzzle extends Puzzle {
         path.lineTo(startX, startY);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONCAVE:
-        path.lineTo(startX, startY + (pieceSquareHeight / 3) * 2);
+        path.lineTo(startX, startY + (pieceSquareHeight / 3f) * 2);
         path.cubicTo(
-            startX + pieceConvexConcaveCubicHeight,
-            startY + ((pieceSquareHeight / 3) * 2) + pieceConvexConcaveCubicWidth,
+            startX + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + ((pieceSquareHeight / 3) * 2) + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
-            startX + pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startX + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
             startX,
-            startY + (pieceSquareHeight / 3));
+            startY + (pieceSquareHeight / 3f));
         path.lineTo(startX, startY);
         break;
       case JigsawPiece.SidesDescription.SIDE_FORM_CONVEX:
-        path.lineTo(startX, startY + (pieceSquareHeight / 3) * 2);
+        path.lineTo(startX, startY + (pieceSquareHeight / 3f) * 2);
         path.cubicTo(
-            startX - pieceConvexConcaveCubicHeight,
-            startY + ((pieceSquareHeight / 3) * 2) + pieceConvexConcaveCubicWidth,
+            startX - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + ((pieceSquareHeight / 3) * 2) + JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
-            startX - pieceConvexConcaveCubicHeight,
-            startY + (pieceSquareHeight / 3) - pieceConvexConcaveCubicWidth,
+            startX - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT,
+            startY + (pieceSquareHeight / 3f) - JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_WIDTH,
 
             startX,
-            startY + (pieceSquareHeight / 3));
+            startY + (pieceSquareHeight / 3f));
         path.lineTo(startX, startY);
         break;
     }

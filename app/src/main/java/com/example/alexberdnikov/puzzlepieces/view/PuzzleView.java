@@ -13,6 +13,7 @@ import com.example.alexberdnikov.puzzlepieces.R;
 public class PuzzleView extends View {
 
   private Puzzle puzzle;
+  private long lastUpdateTimestamp;
 
   public PuzzleView(Context context) {
     super(context);
@@ -50,7 +51,7 @@ public class PuzzleView extends View {
   protected void onImageLoaded(Bitmap bitmap) {
     puzzle.setImageBitmap(bitmap);
     puzzle.generate();
-    invalidate();
+    updateView();
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
@@ -60,13 +61,23 @@ public class PuzzleView extends View {
         break;
       case MotionEvent.ACTION_MOVE:
         puzzle.onMove(event.getX(), event.getY());
-        invalidate();
+        updateView();
         break;
       case MotionEvent.ACTION_UP:
         puzzle.onTouchEnd(event.getX(), event.getY());
+        updateView();
         return performClick();
     }
     return true;
+  }
+
+  private void updateView() {
+    final long FRAME_RATE_MS = 30;
+    long currentMillis = System.currentTimeMillis();
+    if (FRAME_RATE_MS < currentMillis - lastUpdateTimestamp) {
+      invalidate();
+      lastUpdateTimestamp = currentMillis;
+    }
   }
 
   @Override public boolean performClick() {

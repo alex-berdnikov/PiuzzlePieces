@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 
 public class JigsawPiece extends Piece {
+  final static int PIECE_CONVEX_CONCAVE_CUBIC_WIDTH = 16;
+  final static int PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT = 24;
+
   private enum SideConnection {NOT_AVAILABLE, FREE, CONNECTED}
 
   private SideConnection[] sidesStatuses = new SideConnection[4];
@@ -17,7 +20,10 @@ public class JigsawPiece extends Piece {
       NEIGHBOR_NOT_AVAILABLE
   };
 
-  JigsawPiece(
+  public final int puzzleColumnsCount;
+  public final int puzzleRowsCount;
+
+  public JigsawPiece(
       Bitmap pieceImage,
       SidesDescription sidesDescription,
       int puzzleColumnsCount,
@@ -28,6 +34,9 @@ public class JigsawPiece extends Piece {
 
     super(pieceImage, number, x, y);
     this.sidesDescription = sidesDescription;
+    this.puzzleColumnsCount = puzzleColumnsCount;
+    this.puzzleRowsCount = puzzleRowsCount;
+
     initSidesStatuses();
     detectNeighbors(puzzleColumnsCount, puzzleRowsCount);
   }
@@ -52,24 +61,30 @@ public class JigsawPiece extends Piece {
 
   private void detectNeighbors(int puzzleColumnsCount, int puzzleRowsCount) {
     if (sidesStatuses[SidesDescription.SIDE_TOP] == SideConnection.FREE) {
-      boolean isInFirstRow = number % puzzleColumnsCount < puzzleColumnsCount;
+      boolean isInFirstRow = getNumber() < puzzleColumnsCount;
       sideNeighbors[SidesDescription.SIDE_TOP] = isInFirstRow
           ? NEIGHBOR_NOT_AVAILABLE
-          : number - puzzleColumnsCount;
+          : getNumber() - puzzleColumnsCount;
+    }
 
+    if (sidesStatuses[SidesDescription.SIDE_BOTTOM] == SideConnection.FREE) {
       boolean isInLastRow =
-          (((puzzleColumnsCount * puzzleRowsCount) - 1) - puzzleColumnsCount) < number;
+          (((puzzleColumnsCount * puzzleRowsCount) - 1) - puzzleColumnsCount) < getNumber();
       sideNeighbors[SidesDescription.SIDE_BOTTOM] = isInLastRow
           ? NEIGHBOR_NOT_AVAILABLE
-          : number + puzzleColumnsCount;
+          : getNumber() + puzzleColumnsCount;
+    }
 
-      boolean isInFirstColumn = (number % puzzleColumnsCount == 0);
-      sideNeighbors[SidesDescription.SIDE_RIGHT] = isInFirstColumn
-          ? NEIGHBOR_NOT_AVAILABLE : number - 1;
-
-      boolean isInLastColumn = number / puzzleColumnsCount == 1;
+    if (sidesStatuses[SidesDescription.SIDE_RIGHT] == SideConnection.FREE) {
+      boolean isInLastColumn = getNumber() % puzzleColumnsCount == puzzleColumnsCount - 1;
       sideNeighbors[SidesDescription.SIDE_RIGHT] = isInLastColumn
-          ? NEIGHBOR_NOT_AVAILABLE : number + 1;
+          ? NEIGHBOR_NOT_AVAILABLE : getNumber() + 1;
+    }
+
+    if (sidesStatuses[SidesDescription.SIDE_LEFT] == SideConnection.FREE) {
+      boolean isInFirstColumn = getNumber() % puzzleColumnsCount == 0;
+      sideNeighbors[SidesDescription.SIDE_LEFT] = isInFirstColumn
+          ? NEIGHBOR_NOT_AVAILABLE : getNumber() - 1;
     }
   }
 
@@ -89,7 +104,7 @@ public class JigsawPiece extends Piece {
     return sideNeighbors[SidesDescription.SIDE_LEFT];
   }
 
-  public boolean isTopSideFree() {
+  boolean isTopSideFree() {
     return sidesStatuses[SidesDescription.SIDE_TOP] == SideConnection.FREE;
   }
 
@@ -99,34 +114,95 @@ public class JigsawPiece extends Piece {
     }
   }
 
-  public boolean isRightSideFree() {
+  boolean isRightSideFree() {
     return sidesStatuses[SidesDescription.SIDE_RIGHT] == SideConnection.FREE;
   }
 
-  public void connectRightSide() {
+  void connectRightSide() {
     if (sidesStatuses[SidesDescription.SIDE_RIGHT] == SideConnection.FREE) {
       sidesStatuses[SidesDescription.SIDE_RIGHT] = SideConnection.CONNECTED;
     }
   }
 
-  public boolean isBottomSideFree() {
+  boolean isBottomSideFree() {
     return sidesStatuses[SidesDescription.SIDE_BOTTOM] == SideConnection.FREE;
   }
 
-  public void connectBottomSide() {
+  void connectBottomSide() {
     if (sidesStatuses[SidesDescription.SIDE_BOTTOM] == SideConnection.FREE) {
       sidesStatuses[SidesDescription.SIDE_BOTTOM] = SideConnection.CONNECTED;
     }
   }
 
-  public boolean isLeftSideFree() {
+  boolean isLeftSideFree() {
     return sidesStatuses[SidesDescription.SIDE_LEFT] == SideConnection.FREE;
   }
 
-  public void connectLeftSide() {
+  void connectLeftSide() {
     if (sidesStatuses[SidesDescription.SIDE_LEFT] == SideConnection.FREE) {
       sidesStatuses[SidesDescription.SIDE_LEFT] = SideConnection.CONNECTED;
     }
+  }
+
+  int getLeftTopCornerX() {
+    return (sidesDescription.pieceSidesForms[SidesDescription.SIDE_LEFT]
+        == SidesDescription.SIDE_FORM_CONVEX)
+        ? getX() + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT : getX();
+  }
+
+  int getLeftTopCornerY() {
+    return (sidesDescription.pieceSidesForms[SidesDescription.SIDE_TOP]
+        == SidesDescription.SIDE_FORM_CONVEX)
+        ? getY() + PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT : getY();
+  }
+
+  int getLeftBottomCornerX() {
+    return getLeftTopCornerX();
+  }
+
+  int getLeftBottomCornerY() {
+    int leftBottomCornerY = getY() + getPieceHeight();
+    return (sidesDescription.pieceSidesForms[SidesDescription.SIDE_BOTTOM]
+        == SidesDescription.SIDE_FORM_CONVEX)
+        ? leftBottomCornerY - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT : leftBottomCornerY;
+  }
+
+  int getRightTopCornerX() {
+    int rightTopCornerX = getX() + getPieceWidth();
+    return (sidesDescription.pieceSidesForms[SidesDescription.SIDE_RIGHT]
+        == SidesDescription.SIDE_FORM_CONVEX)
+        ? rightTopCornerX - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT : rightTopCornerX;
+  }
+
+  int getSquareWidth() {
+    int width = getPieceWidth();
+    if (sidesDescription.pieceSidesForms[SidesDescription.SIDE_LEFT]
+        == SidesDescription.SIDE_FORM_CONVEX) {
+      width -= PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    if (sidesDescription.pieceSidesForms[SidesDescription.SIDE_RIGHT]
+        == SidesDescription.SIDE_FORM_CONVEX) {
+      width -= PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    return width;
+  }
+
+  public int getTopSideDescription() {
+    return sidesDescription.getSideForm(SidesDescription.SIDE_TOP);
+  }
+
+  public int getRightSideDescription() {
+    return sidesDescription.getSideForm(SidesDescription.SIDE_RIGHT);
+  }
+
+  public int getLeftBottomDescription() {
+    return sidesDescription.getSideForm(SidesDescription.SIDE_BOTTOM);
+  }
+
+  public int getLeftSideDescription() {
+    return sidesDescription.getSideForm(SidesDescription.SIDE_LEFT);
   }
 
   /**

@@ -20,6 +20,10 @@ public class PiecesGenerator {
   private final int puzzleRowsCount;
 
   public PiecesGenerator(int columnsCount, int rowsCount) {
+    if (columnsCount < 1 || rowsCount < 1) {
+      throw new IllegalArgumentException("Puzzle must have at least on piece.");
+    }
+
     puzzleColumnsCount = columnsCount;
     puzzleRowsCount = rowsCount;
     puzzlePiecesCount = columnsCount * rowsCount;
@@ -105,11 +109,11 @@ public class PiecesGenerator {
     }
   }
 
-  int getPuzzleColumnsCount() {
+  public int getPuzzleColumnsCount() {
     return puzzleColumnsCount;
   }
 
-  int getPuzzleRowsCount() {
+  public int getPuzzleRowsCount() {
     return puzzleRowsCount;
   }
 
