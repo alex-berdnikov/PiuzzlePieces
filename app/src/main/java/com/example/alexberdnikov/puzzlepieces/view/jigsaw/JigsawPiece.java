@@ -20,8 +20,8 @@ public class JigsawPiece extends Piece {
       NEIGHBOR_NOT_AVAILABLE
   };
 
-  public final int puzzleColumnsCount;
-  public final int puzzleRowsCount;
+  final int puzzleColumnsCount;
+  final int puzzleRowsCount;
 
   public JigsawPiece(
       Bitmap pieceImage,
@@ -108,7 +108,7 @@ public class JigsawPiece extends Piece {
     return sidesStatuses[SidesDescription.SIDE_TOP] == SideConnection.FREE;
   }
 
-  public void connectTopSide() {
+  void connectTopSide() {
     if (sidesStatuses[SidesDescription.SIDE_TOP] == SideConnection.FREE) {
       sidesStatuses[SidesDescription.SIDE_TOP] = SideConnection.CONNECTED;
     }
@@ -189,20 +189,29 @@ public class JigsawPiece extends Piece {
     return width;
   }
 
-  public int getTopSideDescription() {
+  int getTopSideDescription() {
     return sidesDescription.getSideForm(SidesDescription.SIDE_TOP);
   }
 
-  public int getRightSideDescription() {
-    return sidesDescription.getSideForm(SidesDescription.SIDE_RIGHT);
-  }
-
-  public int getLeftBottomDescription() {
-    return sidesDescription.getSideForm(SidesDescription.SIDE_BOTTOM);
-  }
-
-  public int getLeftSideDescription() {
+  int getLeftSideDescription() {
     return sidesDescription.getSideForm(SidesDescription.SIDE_LEFT);
+  }
+
+  @Override public int[] getPieceOffsetInPuzzle() {
+    int pieceNumberInRow = getNumber() % puzzleColumnsCount;
+    int pieceInPuzzleOffsetX = getSquareWidth() * pieceNumberInRow;
+    if (getLeftSideDescription() == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
+      pieceInPuzzleOffsetX -= JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    int pieceNumberInColumn = getNumber() / puzzleColumnsCount;
+    int pieceInPuzzleOffsetY = getSquareWidth() * pieceNumberInColumn;
+
+    if (getTopSideDescription() == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
+      pieceInPuzzleOffsetY -= JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    return new int[] { pieceInPuzzleOffsetX, pieceInPuzzleOffsetY };
   }
 
   /**

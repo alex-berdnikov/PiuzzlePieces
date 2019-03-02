@@ -51,7 +51,7 @@ public class PuzzleView extends View {
   protected void onImageLoaded(Bitmap bitmap) {
     puzzle.setImageBitmap(bitmap);
     puzzle.generate();
-    updateView();
+    updateView(false);
   }
 
   @Override public boolean onTouchEvent(MotionEvent event) {
@@ -61,20 +61,20 @@ public class PuzzleView extends View {
         break;
       case MotionEvent.ACTION_MOVE:
         puzzle.onMove(event.getX(), event.getY());
-        updateView();
+        updateView(false);
         break;
       case MotionEvent.ACTION_UP:
         puzzle.onTouchEnd(event.getX(), event.getY());
-        updateView();
+        updateView(true);
         return performClick();
     }
     return true;
   }
 
-  private void updateView() {
+  private void updateView(boolean forced) {
     final long FRAME_RATE_MS = 30;
     long currentMillis = System.currentTimeMillis();
-    if (FRAME_RATE_MS < currentMillis - lastUpdateTimestamp) {
+    if (FRAME_RATE_MS < currentMillis - lastUpdateTimestamp || forced) {
       invalidate();
       lastUpdateTimestamp = currentMillis;
     }

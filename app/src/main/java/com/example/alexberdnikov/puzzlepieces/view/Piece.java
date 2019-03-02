@@ -51,4 +51,6 @@ abstract public class Piece {
   public int getNumber() {
     return number;
   }
+
+  public abstract int[] getPieceOffsetInPuzzle();
 }

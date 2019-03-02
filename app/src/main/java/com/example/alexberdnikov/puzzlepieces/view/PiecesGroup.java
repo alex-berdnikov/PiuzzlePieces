@@ -1,6 +1,9 @@
 package com.example.alexberdnikov.puzzlepieces.view;
 
+import android.support.annotation.CallSuper;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -17,12 +20,18 @@ abstract public class PiecesGroup {
     pieces.add(piece);
   }
 
-  public synchronized List<Piece> getPieces() {
+  public List<Piece> getPieces() {
     return pieces;
   }
 
+  @CallSuper
   public void mergeWith(PiecesGroup piecesGroup) {
     pieces.addAll(piecesGroup.pieces);
+    Collections.sort(pieces, new Comparator<Piece>() {
+      @Override public int compare(Piece piece1, Piece piece2) {
+        return Integer.compare(piece1.getNumber(), piece2.getNumber());
+      }
+    });
   }
 
   boolean contains(Piece piece) {

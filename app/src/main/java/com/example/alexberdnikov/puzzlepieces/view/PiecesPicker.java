@@ -40,6 +40,11 @@ public abstract class PiecesPicker {
         pieces.add(piece);
       }
 
+      // Put the group to the beginning of the list so it'll be captured first, if it overlays any
+      // other groups on the screen
+      getPiecesGroups().remove(capturedGroup);
+      getPiecesGroups().add(0, capturedGroup);
+
       prevX = x;
       prevY = y;
     }
@@ -55,16 +60,17 @@ public abstract class PiecesPicker {
       }
 
       Piece leftMostPiece = capturedGroup.getLeftMostPiece();
-     /* if (leftMostPiece.getX() < 0) {
-        newX += Math.abs(leftMostPiece.getX());
+      Piece rightMostPiece = capturedGroup.getRightMostPiece();
+      int rightmostPositionX = screenWidth - rightMostPiece.getPieceWidth();
+
+      if (leftMostPiece.getX() < 0) {
+        newX =
+            capturedPiece.getPieceOffsetInPuzzle()[0] - leftMostPiece.getPieceOffsetInPuzzle()[0];
+      } else if (rightmostPositionX < rightMostPiece.getX()) {
+        newX = rightmostPositionX - (rightMostPiece.getPieceOffsetInPuzzle()[0]
+            - capturedPiece.getPieceOffsetInPuzzle()[0]);
       }
 
-      Piece rightMostPiece = capturedGroup.getRightMostPiece();
-      int rightmostPositionX = screenWidth - capturedPiece.getPieceWidth();
-      if ((rightmostPositionX) < rightMostPiece.getX()) {
-        newX -= rightmostPositionX;
-      }
-*/
       capturedPiece.setX(newX);
 
       int newY = capturedPiece.getY() + Math.round(y - prevY);
@@ -73,6 +79,18 @@ public abstract class PiecesPicker {
       } else if ((screenHeight - capturedPiece.getPieceHeight()) < newY) {
         newY = screenHeight - capturedPiece.getPieceHeight();
       }
+
+      Piece topMostPiece = capturedGroup.getTopMostPiece();
+      Piece bottomMostPiece = capturedGroup.getBottomMostPiece();
+      int bottommostPositionY = screenHeight - bottomMostPiece.getPieceHeight();
+
+      if (topMostPiece.getY() < 0) {
+        newY = capturedPiece.getPieceOffsetInPuzzle()[1] - topMostPiece.getPieceOffsetInPuzzle()[1];
+      } else if (bottommostPositionY < bottomMostPiece.getY()) {
+        newY = bottommostPositionY - (bottomMostPiece.getPieceOffsetInPuzzle()[1]
+            - capturedPiece.getPieceOffsetInPuzzle()[1]);
+      }
+
       capturedPiece.setY(newY);
 
       prevX = x;
@@ -127,6 +145,8 @@ public abstract class PiecesPicker {
   }
 
   abstract protected Piece getCapturedPieceFromCoordinates(float touchX, float touchY);
+
   abstract protected void handlePiecesConnections(Piece draggedPiece);
+
   abstract protected PiecesGroup createPieceGroup(Piece piece);
 }
