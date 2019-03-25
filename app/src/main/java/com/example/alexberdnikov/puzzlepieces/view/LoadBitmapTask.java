@@ -12,10 +12,20 @@ import timber.log.Timber;
 class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
   private Resources resources;
   private WeakReference<PuzzleView> puzzleViewWeakReference;
+  private Size puzzleAreaSize;
 
   LoadBitmapTask(Resources resources, PuzzleView puzzleView) {
     this.resources = resources;
     this.puzzleViewWeakReference = new WeakReference<>(puzzleView);
+  }
+
+  @Override protected void onPreExecute() {
+    if (puzzleViewWeakReference.get() == null) {
+      cancel(true);
+      return;
+    }
+
+    puzzleAreaSize = puzzleViewWeakReference.get().getPuzzleAreaSize();
   }
 
   @Override protected Bitmap doInBackground(Integer... bitmapResource) {
@@ -27,7 +37,6 @@ class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
       return null;
     }
 
-    Size puzzleAreaSize = puzzleViewWeakReference.get().getPuzzleAreaSize();
     options.inSampleSize = ScreenUtils.calculateInSampleSize(
         options, puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
     options.inJustDecodeBounds = false;

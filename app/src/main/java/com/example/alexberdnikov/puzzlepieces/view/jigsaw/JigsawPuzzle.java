@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -14,6 +15,7 @@ import com.example.alexberdnikov.puzzlepieces.BuildConfig;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 import com.example.alexberdnikov.puzzlepieces.view.PiecesPicker;
 import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
+import timber.log.Timber;
 
 public class JigsawPuzzle extends Puzzle {
   private int pieceSquareWidth;
@@ -55,18 +57,33 @@ public class JigsawPuzzle extends Puzzle {
     piecePaint.setColor(0xFF000000);
     pieceCanvas.drawPath(piecePath, piecePaint);
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-    Point pieceImageCoordinates = calculatePieceImageCoordinates(pieceNumber);
+    Point pieceImageSpriteCoordinates = calculatePieceImageCoordinates(pieceNumber);
+
+    Timber.d("=============================== !!!! ========================   ===");
+    Timber.d("------- play area: %dx%d", getPuzzleAreaSize().getWidth(), getPuzzleAreaSize().getHeight());
+    Timber.d("------- image size: %dx%d", getImageBitmap().getWidth(), getImageBitmap().getHeight());
+    Timber.d("------- piece width: %d", pieceSize.getWidth());
+    Timber.d("------- scale: %fx%f", getImageToPlayAreaRatioWidth(), getImageToPlayAreaRatioHeight());
+    Timber.d("------- piece X: %d", pieceImageSpriteCoordinates.x);
 
     Bitmap pieceBitmap = Bitmap.createBitmap(
         getImageBitmap(),
-        pieceImageCoordinates.x,
-        pieceImageCoordinates.y,
+        pieceImageSpriteCoordinates.x,
+        pieceImageSpriteCoordinates.y,
         pieceSize.getWidth(),
         pieceSize.getHeight());
 
+   // Matrix matrix = new Matrix();
+   // matrix.setScale(1.06667f, 1.06667f);
+
     pieceCanvas.drawBitmap(pieceBitmap, 0, 0, piecePaint);
     piecePaint.setXfermode(null);
+    drawPeaceNumberIfNeeded(pieceCanvas, pieceSize, pieceNumber);
 
+    return cutPieceBitmap;
+  }
+
+  private void drawPeaceNumberIfNeeded(Canvas pieceCanvas, Size pieceSize, int pieceNumber) {
     if (BuildConfig.DEBUG) {
       piecePaint.setAntiAlias(true);
       piecePaint.setColor(Color.WHITE);
@@ -76,7 +93,6 @@ public class JigsawPuzzle extends Puzzle {
           pieceSize.getWidth() / 2f - 20, pieceSize.getHeight() / 2f, piecePaint);
     }
 
-    return cutPieceBitmap;
   }
 
   @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {
@@ -84,6 +100,11 @@ public class JigsawPuzzle extends Puzzle {
   }
 
   @Override public void generate() {
+    if (getImageToPlayAreaRatioWidth() < 0 || getImageToPlayAreaRatioHeight() < 0) {
+      throw new IllegalStateException(
+          "Play area to image ratio is not defined. Unable to create a pieces images.");
+    }
+
     for (int i = 0; i < piecesGenerator.getPiecesCount(); i++) {
       // Just put the pieces consequently
       getPieces().add(createPiece(i, (i % 16) * (96 + 18) + 40, (i / 16) * (96 + 18) + 40));
