@@ -6,6 +6,7 @@ import android.util.Size;
 import com.example.alexberdnikov.puzzlepieces.utils.ScreenUtils;
 import java.util.LinkedList;
 import java.util.List;
+import timber.log.Timber;
 
 public abstract class Puzzle {
   private Bitmap imageBitmap;
@@ -23,6 +24,7 @@ public abstract class Puzzle {
     this.screenSize = ScreenUtils.getScreenSize(context);
     puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
         Math.round(screenSize.getHeight() * 0.8f));
+    Timber.d("------- puzzle area size: %dx%d", puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
   }
 
   protected Bitmap getImageBitmap() {
@@ -35,10 +37,6 @@ public abstract class Puzzle {
 
   void setImageBitmap(Bitmap imageBitmap) {
     this.imageBitmap = imageBitmap;
-  }
-
-  public int getPiecesCount() {
-    return pieces.size();
   }
 
   protected List<Piece> getPieces() {

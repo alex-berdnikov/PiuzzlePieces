@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -14,6 +15,7 @@ import com.example.alexberdnikov.puzzlepieces.BuildConfig;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 import com.example.alexberdnikov.puzzlepieces.view.PiecesPicker;
 import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
+import timber.log.Timber;
 
 public class JigsawPuzzle extends Puzzle {
   private int pieceSquareWidth;
@@ -55,18 +57,26 @@ public class JigsawPuzzle extends Puzzle {
     piecePaint.setColor(0xFF000000);
     pieceCanvas.drawPath(piecePath, piecePaint);
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-    Point pieceImageCoordinates = calculatePieceImageCoordinates(pieceNumber);
+    Point pieceImageSpriteCoordinates = calculatePieceImageCoordinates(pieceNumber);
 
     Bitmap pieceBitmap = Bitmap.createBitmap(
         getImageBitmap(),
-        pieceImageCoordinates.x,
-        pieceImageCoordinates.y,
+        pieceImageSpriteCoordinates.x,
+        pieceImageSpriteCoordinates.y,
         pieceSize.getWidth(),
         pieceSize.getHeight());
 
+   // Matrix matrix = new Matrix();
+   // matrix.setScale(1.06667f, 1.06667f);
+
     pieceCanvas.drawBitmap(pieceBitmap, 0, 0, piecePaint);
     piecePaint.setXfermode(null);
+    drawPeaceNumberIfNeeded(pieceCanvas, pieceSize, pieceNumber);
 
+    return cutPieceBitmap;
+  }
+
+  private void drawPeaceNumberIfNeeded(Canvas pieceCanvas, Size pieceSize, int pieceNumber) {
     if (BuildConfig.DEBUG) {
       piecePaint.setAntiAlias(true);
       piecePaint.setColor(Color.WHITE);
@@ -75,8 +85,6 @@ public class JigsawPuzzle extends Puzzle {
       pieceCanvas.drawText(Integer.toString(pieceNumber),
           pieceSize.getWidth() / 2f - 20, pieceSize.getHeight() / 2f, piecePaint);
     }
-
-    return cutPieceBitmap;
   }
 
   @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {

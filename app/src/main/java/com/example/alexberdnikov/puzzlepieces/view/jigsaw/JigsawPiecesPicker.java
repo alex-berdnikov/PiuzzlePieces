@@ -3,11 +3,10 @@ package com.example.alexberdnikov.puzzlepieces.view.jigsaw;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 import com.example.alexberdnikov.puzzlepieces.view.PiecesGroup;
 import com.example.alexberdnikov.puzzlepieces.view.PiecesPicker;
-import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import timber.log.Timber;
 
 public class JigsawPiecesPicker extends PiecesPicker {
   private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 20;
@@ -42,7 +41,7 @@ public class JigsawPiecesPicker extends PiecesPicker {
     PiecesGroup draggedPieceGroup = getGroupOfPiece(draggedPiece);
     Set<JigsawPiecesGroup> groupsToBeMerged = new HashSet<>();
     for (Piece piece : draggedPieceGroup.getPieces()) {
-      groupsToBeMerged.addAll(handleLocksWithTopNeighbors((JigsawPiece) piece));
+      groupsToBeMerged.addAll(handleLocksWithNeighbors((JigsawPiece) piece));
     }
 
     for (JigsawPiecesGroup group : groupsToBeMerged) {
@@ -61,7 +60,7 @@ public class JigsawPiecesPicker extends PiecesPicker {
     return new JigsawPiecesGroup((JigsawPiece) piece);
   }
 
-  private Set<JigsawPiecesGroup> handleLocksWithTopNeighbors(JigsawPiece piece) {
+  private Set<JigsawPiecesGroup> handleLocksWithNeighbors(JigsawPiece piece) {
     Set<JigsawPiecesGroup> groupsToMerge = new HashSet<>();
     if (piece.isTopSideFree()) {
       JigsawPiece topNeighbor = (JigsawPiece) getPieceByNumber(piece.getTopNeighborNumber());

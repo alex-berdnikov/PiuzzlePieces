@@ -2,15 +2,13 @@ package com.example.alexberdnikov.puzzlepieces;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPuzzle;
-import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesGenerator;
 import com.example.alexberdnikov.puzzlepieces.view.PuzzleView;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-    puzzleView.setupPuzzle(new JigsawPuzzle(this,10, 5));
+    final int COLUMNS_COUNT = 10;
+    final int ROWS_COUNT = 5;
+    puzzleView.setupPuzzle(new JigsawPuzzle(this, COLUMNS_COUNT, ROWS_COUNT));
   }
 }
