@@ -16,9 +16,6 @@ public abstract class Puzzle {
   private List<Piece> pieces = new LinkedList<>();
   private PiecesPicker piecesPicker;
 
-  private float playAreaToImageRatioWidth = -1;
-  private float playAreaToImageRatioHeight = -1;
-
   public Puzzle(Context context) {
     calculateAndSetupPuzzleArea(context);
   }
@@ -40,18 +37,6 @@ public abstract class Puzzle {
 
   void setImageBitmap(Bitmap imageBitmap) {
     this.imageBitmap = imageBitmap;
-    calculateImageToPlayAreaRatio();
-  }
-
-  private void calculateImageToPlayAreaRatio() {
-    playAreaToImageRatioWidth = (float) imageBitmap.getWidth() / puzzleAreaSize.getWidth();
-    playAreaToImageRatioHeight = (float) imageBitmap.getHeight() / puzzleAreaSize.getHeight();
-    Timber.d("------ playAreaToImageRatioWidth: %f", playAreaToImageRatioWidth);
-    Timber.d("------ playAreaToImageRatioHeight: %f", playAreaToImageRatioHeight);
-  }
-
-  public int getPiecesCount() {
-    return pieces.size();
   }
 
   protected List<Piece> getPieces() {
@@ -72,14 +57,6 @@ public abstract class Puzzle {
 
   protected void onGenerated() {
     piecesPicker = createPiecesPicker(screenSize.getWidth(), screenSize.getHeight());
-  }
-
-  protected float getImageToPlayAreaRatioWidth() {
-    return playAreaToImageRatioWidth;
-  }
-
-  protected float getImageToPlayAreaRatioHeight() {
-    return playAreaToImageRatioHeight;
   }
 
   abstract public void generate();

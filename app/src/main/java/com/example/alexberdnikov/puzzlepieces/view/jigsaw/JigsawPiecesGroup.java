@@ -58,42 +58,29 @@ public class JigsawPiecesGroup extends PiecesGroup {
 
   private void setLeftMostPiece() {
     JigsawPiece justPiece = (JigsawPiece) getPieces().get(0);
-    int puzzleColumnsCount = justPiece.puzzleColumnsCount;
-    int puzzleRowsCount = justPiece.puzzleRowsCount;
-
-    for (int columnNumber = 0; columnNumber < puzzleColumnsCount; columnNumber++) {
-      int cellNumber = columnNumber;
-      for (int rowNumber = 0; rowNumber < puzzleRowsCount; rowNumber++) {
-        for (Piece piece : getPieces()) {
-          if (piece.getNumber() == cellNumber) {
-            leftMostPiece = (JigsawPiece) piece;
-            return;
-          }
-        }
-        cellNumber += puzzleColumnsCount;
+    this.leftMostPiece = justPiece;
+    int leftMostPieceNumberInRow = justPiece.getNumber() % justPiece.puzzleColumnsCount;
+    for (Piece piece : getPieces()) {
+      int pieceNumberInRow = piece.getNumber() % justPiece.puzzleColumnsCount;
+      if (pieceNumberInRow < leftMostPieceNumberInRow) {
+        leftMostPieceNumberInRow = pieceNumberInRow;
+        this.leftMostPiece = (JigsawPiece) piece;
       }
     }
-    throw new IllegalStateException("No pieces found in the group.");
   }
 
   private void setRightMostPiece() {
     JigsawPiece justPiece = (JigsawPiece) getPieces().get(0);
-    int puzzleColumnsCount = justPiece.puzzleColumnsCount;
-    int puzzleRowsCount = justPiece.puzzleRowsCount;
+    this.rightMostPiece = justPiece;
+    int rightMostPieceNumberInRow = justPiece.getNumber() % justPiece.puzzleColumnsCount;
 
-    for (int columnNumber = puzzleColumnsCount; 0 <= columnNumber; columnNumber--) {
-      int cellNumber = columnNumber;
-      for (int rowNumber = 0; rowNumber < puzzleRowsCount; rowNumber++) {
-        for (Piece piece : getPieces()) {
-          if (piece.getNumber() == cellNumber) {
-            rightMostPiece = (JigsawPiece) piece;
-            return;
-          }
-        }
-        cellNumber += puzzleColumnsCount;
+    for (Piece piece : getPieces()) {
+      int pieceNumberInRow = piece.getNumber() % justPiece.puzzleColumnsCount;
+      if (rightMostPieceNumberInRow < pieceNumberInRow) {
+        rightMostPieceNumberInRow = pieceNumberInRow;
+        this.rightMostPiece = (JigsawPiece) piece;
       }
     }
-    throw new IllegalStateException("No pieces found in the group.");
   }
 
   private void setBottomMostPiece() {

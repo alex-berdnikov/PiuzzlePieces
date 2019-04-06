@@ -63,7 +63,6 @@ public class JigsawPuzzle extends Puzzle {
     Timber.d("------- play area: %dx%d", getPuzzleAreaSize().getWidth(), getPuzzleAreaSize().getHeight());
     Timber.d("------- image size: %dx%d", getImageBitmap().getWidth(), getImageBitmap().getHeight());
     Timber.d("------- piece width: %d", pieceSize.getWidth());
-    Timber.d("------- scale: %fx%f", getImageToPlayAreaRatioWidth(), getImageToPlayAreaRatioHeight());
     Timber.d("------- piece X: %d", pieceImageSpriteCoordinates.x);
 
     Bitmap pieceBitmap = Bitmap.createBitmap(
@@ -92,7 +91,6 @@ public class JigsawPuzzle extends Puzzle {
       pieceCanvas.drawText(Integer.toString(pieceNumber),
           pieceSize.getWidth() / 2f - 20, pieceSize.getHeight() / 2f, piecePaint);
     }
-
   }
 
   @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {
@@ -100,11 +98,6 @@ public class JigsawPuzzle extends Puzzle {
   }
 
   @Override public void generate() {
-    if (getImageToPlayAreaRatioWidth() < 0 || getImageToPlayAreaRatioHeight() < 0) {
-      throw new IllegalStateException(
-          "Play area to image ratio is not defined. Unable to create a pieces images.");
-    }
-
     for (int i = 0; i < piecesGenerator.getPiecesCount(); i++) {
       // Just put the pieces consequently
       getPieces().add(createPiece(i, (i % 16) * (96 + 18) + 40, (i / 16) * (96 + 18) + 40));
