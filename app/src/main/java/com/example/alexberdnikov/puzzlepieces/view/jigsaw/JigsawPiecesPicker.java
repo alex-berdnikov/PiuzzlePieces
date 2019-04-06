@@ -68,8 +68,6 @@ public class JigsawPiecesPicker extends PiecesPicker {
         piece.connectTopSide();
         topNeighbor.connectBottomSide();
 
-
-
         JigsawPiecesGroup topNeighborGroup = (JigsawPiecesGroup) getGroupOfPiece(topNeighbor);
         groupsToMerge.add(topNeighborGroup);
       }
