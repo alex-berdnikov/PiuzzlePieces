@@ -59,12 +59,6 @@ public class JigsawPuzzle extends Puzzle {
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
     Point pieceImageSpriteCoordinates = calculatePieceImageCoordinates(pieceNumber);
 
-    Timber.d("=============================== !!!! ========================   ===");
-    Timber.d("------- play area: %dx%d", getPuzzleAreaSize().getWidth(), getPuzzleAreaSize().getHeight());
-    Timber.d("------- image size: %dx%d", getImageBitmap().getWidth(), getImageBitmap().getHeight());
-    Timber.d("------- piece width: %d", pieceSize.getWidth());
-    Timber.d("------- piece X: %d", pieceImageSpriteCoordinates.x);
-
     Bitmap pieceBitmap = Bitmap.createBitmap(
         getImageBitmap(),
         pieceImageSpriteCoordinates.x,
