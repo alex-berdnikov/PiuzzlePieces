@@ -29,12 +29,6 @@ public class PuzzleView extends View {
     super(context, attrs, defStyleAttr);
   }
 
-  public PuzzleView(Context context,
-      @Nullable AttributeSet attrs, int defStyleAttr,
-      int defStyleRes) {
-    super(context, attrs, defStyleAttr, defStyleRes);
-  }
-
   public void setupPuzzle(Puzzle puzzle) {
     this.puzzle = puzzle;
     loadBitmap();

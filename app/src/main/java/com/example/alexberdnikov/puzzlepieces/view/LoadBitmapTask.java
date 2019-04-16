@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Size;
+import com.example.alexberdnikov.puzzlepieces.utils.BitmapUtils;
 import com.example.alexberdnikov.puzzlepieces.utils.ScreenUtils;
 import java.lang.ref.WeakReference;
 import timber.log.Timber;
@@ -37,11 +38,38 @@ class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
       return null;
     }
 
+    Size screeSize = ScreenUtils.getScreenSize(puzzleViewWeakReference.get().getContext());
     options.inSampleSize = ScreenUtils.calculateInSampleSize(
-        options, puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
-    options.inJustDecodeBounds = false;
+        options, screeSize.getWidth(), screeSize.getHeight());
 
-    return BitmapFactory.decodeResource(resources, bitmapResource[0], options);
+    options.inJustDecodeBounds = false;
+    Bitmap scaledBitmap = BitmapFactory.decodeResource(resources, bitmapResource[0], options);
+
+
+    Timber.d("------ !!!! --- !!!! --- options: outSize: %dx%d", options.outWidth, options.outHeight);
+
+    Timber.d("------ !!!! --- bitmap size: %dx%d, play area size: %dx%d", scaledBitmap.getWidth(),
+        scaledBitmap.getHeight(), puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
+
+    Size puzzleAreaSize = puzzleViewWeakReference.get().getPuzzleAreaSize();
+    boolean isBitmapLessThanPlayArea = scaledBitmap.getWidth() < puzzleAreaSize.getWidth()
+        || scaledBitmap.getHeight() < puzzleAreaSize.getHeight();
+
+    if (isBitmapLessThanPlayArea) {
+      // Stretch bitmap to the size of play area and crop
+
+      return BitmapUtils.scaleAndCropBitmap(scaledBitmap, puzzleAreaSize.getWidth(),
+          puzzleAreaSize.getHeight());
+    }
+
+    boolean isBitmapBiggerThanPlayArea = puzzleAreaSize.getWidth() < options.outWidth
+        || puzzleAreaSize.getHeight() < options.outHeight;
+    if (isBitmapBiggerThanPlayArea) {
+      // Resize image to play are size and crop what's left
+      // return result;
+    }
+
+    return scaledBitmap;
   }
 
   @Override protected void onPostExecute(Bitmap bitmap) {

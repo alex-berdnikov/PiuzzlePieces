@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -15,7 +14,6 @@ import com.example.alexberdnikov.puzzlepieces.BuildConfig;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 import com.example.alexberdnikov.puzzlepieces.view.PiecesPicker;
 import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
-import timber.log.Timber;
 
 public class JigsawPuzzle extends Puzzle {
   private int pieceSquareWidth;
@@ -65,9 +63,6 @@ public class JigsawPuzzle extends Puzzle {
         pieceImageSpriteCoordinates.y,
         pieceSize.getWidth(),
         pieceSize.getHeight());
-
-   // Matrix matrix = new Matrix();
-   // matrix.setScale(1.06667f, 1.06667f);
 
     pieceCanvas.drawBitmap(pieceBitmap, 0, 0, piecePaint);
     piecePaint.setXfermode(null);
