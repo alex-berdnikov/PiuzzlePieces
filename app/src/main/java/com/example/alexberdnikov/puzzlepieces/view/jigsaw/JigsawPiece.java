@@ -174,7 +174,7 @@ public class JigsawPiece extends Piece {
         ? rightTopCornerX - PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT : rightTopCornerX;
   }
 
-  int getSquareWidth() {
+  private int getSquareWidth() {
     int width = getPieceWidth();
     if (sidesDescription.pieceSidesForms[SidesDescription.SIDE_LEFT]
         == SidesDescription.SIDE_FORM_CONVEX) {
@@ -187,6 +187,21 @@ public class JigsawPiece extends Piece {
     }
 
     return width;
+  }
+
+  private int getSquareHeight() {
+    int height = getPieceHeight();
+    if (sidesDescription.pieceSidesForms[SidesDescription.SIDE_TOP]
+        == SidesDescription.SIDE_FORM_CONVEX) {
+      height -= PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    if (sidesDescription.pieceSidesForms[SidesDescription.SIDE_BOTTOM]
+        == SidesDescription.SIDE_FORM_CONVEX) {
+      height -= PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;
+    }
+
+    return height;
   }
 
   int getTopSideDescription() {
@@ -205,7 +220,7 @@ public class JigsawPiece extends Piece {
     }
 
     int pieceNumberInColumn = getNumber() / puzzleColumnsCount;
-    int pieceInPuzzleOffsetY = getSquareWidth() * pieceNumberInColumn;
+    int pieceInPuzzleOffsetY = getSquareHeight() * pieceNumberInColumn;
 
     if (getTopSideDescription() == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
       pieceInPuzzleOffsetY -= JigsawPiece.PIECE_CONVEX_CONCAVE_CUBIC_HEIGHT;

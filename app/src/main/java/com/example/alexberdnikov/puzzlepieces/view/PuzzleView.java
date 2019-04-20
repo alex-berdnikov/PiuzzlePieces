@@ -9,6 +9,7 @@ import android.util.Size;
 import android.view.MotionEvent;
 import android.view.View;
 import com.example.alexberdnikov.puzzlepieces.R;
+import timber.log.Timber;
 
 public class PuzzleView extends View {
 
@@ -40,9 +41,11 @@ public class PuzzleView extends View {
 
   private void loadBitmap() {
     new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
+    //new LoadBitmapTask(getResources(), this).execute(R.drawable.emma_stone);
   }
 
   protected void onImageLoaded(Bitmap bitmap) {
+    Timber.d("------ !! --- !! ---- LOADED BITMAP SIZE: %dx%d", bitmap.getWidth(), bitmap.getHeight());
     puzzle.setImageBitmap(bitmap);
     puzzle.generate();
     updateView(false);

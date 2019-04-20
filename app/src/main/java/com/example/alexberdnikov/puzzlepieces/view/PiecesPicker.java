@@ -63,7 +63,6 @@ public abstract class PiecesPicker {
       Piece leftMostPiece = capturedGroup.getLeftMostPiece();
       Piece rightMostPiece = capturedGroup.getRightMostPiece();
       int rightmostPositionX = screenWidth - rightMostPiece.getPieceWidth();
-      Timber.d("--------- rightmostPositionX: %d, rightMostPiece: %s", rightmostPositionX, rightMostPiece);
       if (leftMostPiece.getX() < 0) {
         newX =
             capturedPiece.getPieceOffsetInPuzzle()[0] - leftMostPiece.getPieceOffsetInPuzzle()[0];
