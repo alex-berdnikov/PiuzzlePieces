@@ -57,16 +57,15 @@ class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
 
     if (isBitmapLessThanPlayArea) {
       // Stretch bitmap to the size of play area and crop
-
-      return BitmapUtils.scaleAndCropBitmap(scaledBitmap, puzzleAreaSize.getWidth(),
+      return BitmapUtils.scaleBitmap(scaledBitmap, puzzleAreaSize.getWidth(),
           puzzleAreaSize.getHeight());
     }
 
     boolean isBitmapBiggerThanPlayArea = puzzleAreaSize.getWidth() < options.outWidth
         || puzzleAreaSize.getHeight() < options.outHeight;
     if (isBitmapBiggerThanPlayArea) {
-      // Resize image to play are size and crop what's left
-      // return result;
+       return BitmapUtils.cropCenterBitmap(scaledBitmap, puzzleAreaSize.getWidth(),
+           puzzleAreaSize.getHeight());
     }
 
     return scaledBitmap;

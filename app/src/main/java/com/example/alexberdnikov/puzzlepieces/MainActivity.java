@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
-    final int COLUMNS_COUNT = 10;
-    final int ROWS_COUNT = 5;
-    puzzleView.setupPuzzle(new JigsawPuzzle(this, COLUMNS_COUNT, ROWS_COUNT));
+    puzzleView.setupPuzzle(new JigsawPuzzle(this, 16, 9));
   }
 }
