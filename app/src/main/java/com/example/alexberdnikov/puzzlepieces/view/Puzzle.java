@@ -22,8 +22,9 @@ public abstract class Puzzle {
 
   private void calculateAndSetupPuzzleArea(Context context) {
     this.screenSize = ScreenUtils.getScreenSize(context);
-    puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
-        Math.round(screenSize.getHeight() * 0.8f));
+    //puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
+    //    Math.round(screenSize.getHeight() * 0.8f));
+    puzzleAreaSize = new Size(1000, 1000);
     Timber.d("------- puzzle area size: %dx%d", puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
   }
 

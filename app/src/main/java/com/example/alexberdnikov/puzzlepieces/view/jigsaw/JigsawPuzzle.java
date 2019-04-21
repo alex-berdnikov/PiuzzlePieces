@@ -54,6 +54,8 @@ public class JigsawPuzzle extends Puzzle {
     Canvas pieceCanvas = new Canvas(cutPieceBitmap);
 
     piecePaint.setColor(0xFF000000);
+    piecePaint.setStrokeWidth(1);
+    piecePaint.setStyle(Paint.Style.FILL_AND_STROKE);
     pieceCanvas.drawPath(piecePath, piecePaint);
     piecePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
     Point pieceImageSpriteCoordinates = calculatePieceImageCoordinates(pieceNumber);
@@ -68,6 +70,10 @@ public class JigsawPuzzle extends Puzzle {
     pieceCanvas.drawBitmap(pieceBitmap, 0, 0, piecePaint);
     piecePaint.setXfermode(null);
     drawPeaceNumberIfNeeded(pieceCanvas, pieceSize, pieceNumber);
+
+    piecePaint.setColor(Color.BLACK);
+    piecePaint.setStyle(Paint.Style.STROKE);
+    pieceCanvas.drawPath(piecePath, piecePaint);
 
     return cutPieceBitmap;
   }
