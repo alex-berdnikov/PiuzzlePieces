@@ -40,8 +40,8 @@ public class PuzzleView extends View {
   }
 
   private void loadBitmap() {
-    //new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
-    new LoadBitmapTask(getResources(), this).execute(R.drawable.emma_stone);
+    new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
+    //new LoadBitmapTask(getResources(), this).execute(R.drawable.emma_stone);
   }
 
   protected void onImageLoaded(Bitmap bitmap) {
