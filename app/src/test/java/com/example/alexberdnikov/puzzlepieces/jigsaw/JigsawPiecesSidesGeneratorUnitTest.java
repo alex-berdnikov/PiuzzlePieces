@@ -1,41 +1,41 @@
 package com.example.alexberdnikov.puzzlepieces.jigsaw;
 
 import com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece;
-import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesGenerator;
+import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesSidesGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class JigsawPiecesGeneratorUnitTest {
+public class JigsawPiecesSidesGeneratorUnitTest {
   private final int PUZZLE_COLUMNS = 50;
   private final int PUZZLE_ROWS = 20;
 
-  private PiecesGenerator piecesGenerator;
+  private PiecesSidesGenerator piecesSidesGenerator;
 
   @Before
   public void createPuzzle() {
-    piecesGenerator = new PiecesGenerator(PUZZLE_COLUMNS, PUZZLE_ROWS);
+    piecesSidesGenerator = new PiecesSidesGenerator(PUZZLE_COLUMNS, PUZZLE_ROWS);
   }
 
   @Test
   public void piecesCountIsValid() {
-    assertEquals(piecesGenerator.getPiecesCount(), PUZZLE_COLUMNS * PUZZLE_ROWS);
+    assertEquals(piecesSidesGenerator.getPiecesCount(), PUZZLE_COLUMNS * PUZZLE_ROWS);
   }
 
   @Test
   public void allPiecesInPlace() {
-    for (int pieceNumber = 0; pieceNumber < piecesGenerator.getPiecesCount(); pieceNumber++) {
-      assertNotNull(piecesGenerator.getSidesDescription(pieceNumber));
+    for (int pieceNumber = 0; pieceNumber < piecesSidesGenerator.getPiecesCount(); pieceNumber++) {
+      assertNotNull(piecesSidesGenerator.getSidesDescription(pieceNumber));
     }
   }
 
   @Test
   public void allPiecesHaveValidSideForms() {
-    int piecesCount = piecesGenerator.getPiecesCount();
+    int piecesCount = piecesSidesGenerator.getPiecesCount();
     for (int pieceNumber = 0; pieceNumber < piecesCount; pieceNumber++) {
 
-      JigsawPiece.SidesDescription sidesDescription = piecesGenerator.getSidesDescription(pieceNumber);
+      JigsawPiece.SidesDescription sidesDescription = piecesSidesGenerator.getSidesDescription(pieceNumber);
 
       // First piece in every row must have left side flat,
       // all other pieces have their left sides curvy

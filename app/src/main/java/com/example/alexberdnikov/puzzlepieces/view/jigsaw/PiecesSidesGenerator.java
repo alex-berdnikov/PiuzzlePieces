@@ -13,13 +13,14 @@ import static com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece.Sid
 import static com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece.SidesDescription.SIDE_TOP;
 
 
-public class PiecesGenerator {
-  private List<JigsawPiece.SidesDescription> sidesDescriptions;
+public class PiecesSidesGenerator {
   private final int puzzlePiecesCount;
   private final int puzzleColumnsCount;
   private final int puzzleRowsCount;
 
-  public PiecesGenerator(int columnsCount, int rowsCount) {
+  private List<JigsawPiece.SidesDescription> sidesDescriptions;
+
+  public PiecesSidesGenerator(int columnsCount, int rowsCount) {
     if (columnsCount < 1 || rowsCount < 1) {
       throw new IllegalArgumentException("Puzzle must have at least on piece.");
     }
@@ -27,10 +28,11 @@ public class PiecesGenerator {
     puzzleColumnsCount = columnsCount;
     puzzleRowsCount = rowsCount;
     puzzlePiecesCount = columnsCount * rowsCount;
-    generatePuzzle();
+
+    generatePiecesSides();
   }
 
-  private void generatePuzzle() {
+  private void generatePiecesSides() {
     sidesDescriptions = new ArrayList<JigsawPiece.SidesDescription>(puzzlePiecesCount) {{
       for (int i = 0; i < puzzlePiecesCount; i++) {
         add(new JigsawPiece.SidesDescription());
@@ -41,7 +43,7 @@ public class PiecesGenerator {
     generateTopAndBottomSides();
   }
 
-  private int getRandomSideCurve() {
+  private int getRandomSideType() {
     return new Random().nextInt(2) + 1;
   }
 
@@ -69,7 +71,7 @@ public class PiecesGenerator {
                 ? SIDE_FORM_CONVEX : SIDE_FORM_CONCAVE;
       }
 
-      sidesDescription.pieceSidesForms[SIDE_RIGHT] = isLastPieceInRow ? SIDE_FORM_FLAT : getRandomSideCurve();
+      sidesDescription.pieceSidesForms[SIDE_RIGHT] = isLastPieceInRow ? SIDE_FORM_FLAT : getRandomSideType();
       sidesDescriptions.set(pieceNumber, sidesDescription);
     }
   }
@@ -102,7 +104,7 @@ public class PiecesGenerator {
       if (isLastPieceInColumn) {
         sidesDescription.pieceSidesForms[SIDE_BOTTOM] = SIDE_FORM_FLAT;
       } else {
-        sidesDescription.pieceSidesForms[SIDE_BOTTOM] = getRandomSideCurve();
+        sidesDescription.pieceSidesForms[SIDE_BOTTOM] = getRandomSideType();
       }
 
       sidesDescriptions.set(pieceNumber, sidesDescription);

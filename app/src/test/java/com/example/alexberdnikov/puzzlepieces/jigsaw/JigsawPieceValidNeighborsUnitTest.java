@@ -2,7 +2,7 @@ package com.example.alexberdnikov.puzzlepieces.jigsaw;
 
 import android.graphics.Bitmap;
 import com.example.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece;
-import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesGenerator;
+import com.example.alexberdnikov.puzzlepieces.view.jigsaw.PiecesSidesGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class JigsawPieceValidNeighborsUnitTest {
   public void createPieces() {
     MockitoAnnotations.initMocks(this);
 
-    PiecesGenerator generator = new PiecesGenerator(PUZZLE_COLUMNS, PUZZLE_ROWS);
+    PiecesSidesGenerator generator = new PiecesSidesGenerator(PUZZLE_COLUMNS, PUZZLE_ROWS);
     pieces = new ArrayList<>();
 
     for (int i = 0; i < generator.getPiecesCount(); i++) {
