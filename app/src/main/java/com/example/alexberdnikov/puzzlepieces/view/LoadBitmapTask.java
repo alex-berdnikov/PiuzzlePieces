@@ -45,12 +45,6 @@ class LoadBitmapTask extends AsyncTask<Integer, Void, Bitmap> {
     options.inJustDecodeBounds = false;
     Bitmap scaledBitmap = BitmapFactory.decodeResource(resources, bitmapResource[0], options);
 
-
-    Timber.d("------ !!!! --- !!!! --- options: outSize: %dx%d", options.outWidth, options.outHeight);
-
-    Timber.d("------ !!!! --- bitmap size: %dx%d, play area size: %dx%d", scaledBitmap.getWidth(),
-        scaledBitmap.getHeight(), puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
-
     Size puzzleAreaSize = puzzleViewWeakReference.get().getPuzzleAreaSize();
     boolean isBitmapLessThanPlayArea = scaledBitmap.getWidth() < puzzleAreaSize.getWidth()
         || scaledBitmap.getHeight() < puzzleAreaSize.getHeight();

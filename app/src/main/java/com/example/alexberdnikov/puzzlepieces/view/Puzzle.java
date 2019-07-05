@@ -25,7 +25,6 @@ public abstract class Puzzle {
     //puzzleAreaSize = new Size(Math.round(screenSize.getWidth() * 0.8f),
     //    Math.round(screenSize.getHeight() * 0.8f));
     puzzleAreaSize = new Size(1000, 1000);
-    Timber.d("------- puzzle area size: %dx%d", puzzleAreaSize.getWidth(), puzzleAreaSize.getHeight());
   }
 
   protected Bitmap getImageBitmap() {

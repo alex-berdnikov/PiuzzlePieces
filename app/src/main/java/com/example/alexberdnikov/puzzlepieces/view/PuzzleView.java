@@ -45,7 +45,6 @@ public class PuzzleView extends View {
   }
 
   protected void onImageLoaded(Bitmap bitmap) {
-    Timber.d("------ !! --- !! ---- LOADED BITMAP SIZE: %dx%d", bitmap.getWidth(), bitmap.getHeight());
     puzzle.setImageBitmap(bitmap);
     puzzle.generate();
     updateView(false);
