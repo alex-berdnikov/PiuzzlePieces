@@ -68,7 +68,7 @@ public class PuzzleView extends View {
   }
 
   private void updateView(boolean forced) {
-    final long FRAME_RATE_MS = 30;
+    final long FRAME_RATE_MS = 40;
     long currentMillis = System.currentTimeMillis();
     if (FRAME_RATE_MS < currentMillis - lastUpdateTimestamp || forced) {
       invalidate();
@@ -81,8 +81,6 @@ public class PuzzleView extends View {
   }
 
   @Override protected void onDraw(Canvas canvas) {
-    super.onDraw(canvas);
-
     for (Piece piece : puzzle.getPieces()) {
       canvas.drawBitmap(piece.getPieceImage(), piece.getX(), piece.getY(), null);
     }

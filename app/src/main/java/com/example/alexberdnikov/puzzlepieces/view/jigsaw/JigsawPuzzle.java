@@ -16,6 +16,7 @@ import com.example.alexberdnikov.puzzlepieces.view.Puzzle;
 
 public class JigsawPuzzle extends Puzzle {
   private final boolean DRAW_NUMBERS_ON_PIECES = true;
+  private final boolean DRAW_PIVOTS_ON_PIECES = false;
   private int pieceSquareWidth;
   private int pieceSquareHeight;
 
@@ -106,8 +107,10 @@ public class JigsawPuzzle extends Puzzle {
   }
 
   private void drawPiecePivotIfNeeded(Canvas pieceCanvas, JigsawPathsGenerator.PathData pieceData) {
-    piecePaint.setColor(Color.RED);
-    pieceCanvas.drawCircle(pieceData.getPiecePivotX(), pieceData.getPiecePivotY(), 5, piecePaint);
+    if (DRAW_PIVOTS_ON_PIECES && BuildConfig.DEBUG) {
+      piecePaint.setColor(Color.RED);
+      pieceCanvas.drawCircle(pieceData.getPiecePivotX(), pieceData.getPiecePivotY(), 5, piecePaint);
+    }
   }
 
   @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {
