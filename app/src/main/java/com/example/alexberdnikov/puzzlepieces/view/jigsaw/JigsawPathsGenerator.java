@@ -55,8 +55,8 @@ class JigsawPathsGenerator {
       //int bottomSideForm = bottomSidesDescription.get(pieceNumber);
       int bottomSideForm =
           piecesSidesGenerator.getSidesDescription(pieceNumber).getSideForm(SIDE_BOTTOM);
-      int pieceNumberInRow = pieceNumber % piecesSidesGenerator.getPuzzleColumnsCount();
-      int pieceNumberInColumn = pieceNumber / piecesSidesGenerator.getPuzzleColumnsCount();
+      int pieceNumberInRow = getPieceNumberInRow(pieceNumber);
+      int pieceNumberInColumn = getPieceNumberInColumn(pieceNumber);
 
       if (bottomSideForm == SIDE_FORM_FLAT) {
         drawFlatBottomSide(path, pieceNumberInRow, pieceNumberInColumn);
@@ -74,6 +74,14 @@ class JigsawPathsGenerator {
     rowsPaths.add(rowNumber, path);
   }
 
+  private int getPieceNumberInColumn(int pieceNumber) {
+    return pieceNumber / piecesSidesGenerator.getPuzzleColumnsCount();
+  }
+
+  private int getPieceNumberInRow(int pieceNumber) {
+    return pieceNumber % piecesSidesGenerator.getPuzzleColumnsCount();
+  }
+
   private void generateRightSidePathForColumn(int columnNumber) {
     int firstPieceInColumn = columnNumber;
     int lastPieceInColumn = columnNumber
@@ -89,8 +97,8 @@ class JigsawPathsGenerator {
       //int rightSideForm = rightSidesDescription.get(pieceNumber);
       int rightSideForm =
           piecesSidesGenerator.getSidesDescription(pieceNumber).getSideForm(SIDE_RIGHT);
-      int pieceNumberInRow = pieceNumber % piecesSidesGenerator.getPuzzleColumnsCount();
-      int pieceNumberInColumn = pieceNumber / piecesSidesGenerator.getPuzzleColumnsCount();
+      int pieceNumberInRow = getPieceNumberInRow(pieceNumber);
+      int pieceNumberInColumn = getPieceNumberInColumn(pieceNumber);
 
       if (rightSideForm == SIDE_FORM_FLAT) {
         drawFlatRightSide(path, pieceNumberInRow, pieceNumberInColumn);
@@ -348,8 +356,8 @@ class JigsawPathsGenerator {
   }
 
   PathData createPathForPiece(int pieceNumber) {
-    int pieceRow = pieceNumber / piecesSidesGenerator.getPuzzleColumnsCount();
-    int pieceColumn = pieceNumber % piecesSidesGenerator.getPuzzleColumnsCount();
+    int pieceRow = getPieceNumberInColumn(pieceNumber);
+    int pieceColumn = getPieceNumberInRow(pieceNumber);
 
     Path rowPath = createRowPath(pieceRow);
     Path columnPath = createColumnPath(pieceColumn);
@@ -359,19 +367,28 @@ class JigsawPathsGenerator {
 
     RectF pieceBounds = new RectF();
     piecePath.computeBounds(pieceBounds, false);
-    piecePath.offset(-pieceBounds.left, -pieceBounds.top);
 
-    return new PathData(piecePath, pieceBounds);
+    int piecePivotX = getPieceNumberInRow(pieceNumber) * pieceSquareWidth + pieceSquareWidth / 2;
+    int piecePivotY = getPieceNumberInColumn(pieceNumber) * pieceSquareHeight + pieceSquareHeight / 2;
+
+    int rPiecePivotX = piecePivotX - Math.round(pieceBounds.left);
+    int rPiecePivotY = piecePivotY - Math.round(pieceBounds.top);
+
+    piecePath.offset(-pieceBounds.left, -pieceBounds.top);
+    return new PathData(piecePath, pieceBounds, rPiecePivotX, rPiecePivotY);
   }
 
   static class PathData {
     private Path path;
     private RectF bounds;
+    private int rPivotX;
+    private int rPivotY;
 
-    private PathData(Path path, RectF bounds) {
-      Timber.d("---- bounds: %s", bounds);
+    private PathData(Path path, RectF bounds, int rPivotX, int rPivotY) {
       this.path = path;
       this.bounds = bounds;
+      this.rPivotX = rPivotX;
+      this.rPivotY = rPivotY;
     }
 
     Path getPath() {
@@ -384,8 +401,16 @@ class JigsawPathsGenerator {
       return new Size(pieceWidth, pieceHeight);
     }
 
+    public int getPiecePivotX() {
+      return rPivotX;
+    }
+
+    public int getPiecePivotY() {
+      return rPivotY;
+    }
+
     Point getOriginalCoordinates() {
-      return new Point((int) bounds.left, (int) bounds.top);
+      return new Point(Math.round(bounds.left), Math.round(bounds.top));
     }
   }
 }

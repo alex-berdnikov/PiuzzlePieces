@@ -10,10 +10,17 @@ import java.util.Set;
 
 public class JigsawPiecesPicker extends PiecesPicker {
   private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 20;
-  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 15;
+  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 20;
 
-  JigsawPiecesPicker(List<Piece> pieces, int screenWidth, int screenHeight) {
+  private int pieceSquareWidth;
+  private int pieceSquareHeight;
+
+  JigsawPiecesPicker(List<Piece> pieces, int pieceSquareWidth, int pieceSquareHeight,
+      int screenWidth, int screenHeight) {
     super(pieces, screenWidth, screenHeight);
+
+    this.pieceSquareWidth = pieceSquareWidth;
+    this.pieceSquareHeight = pieceSquareHeight;
   }
 
   protected JigsawPiece getCapturedPieceFromCoordinates(float touchX, float touchY) {
@@ -25,11 +32,6 @@ public class JigsawPiecesPicker extends PiecesPicker {
       }
     }
     return null;
-  }
-
-  @Override
-  public void onMove(float x, float y) {
-    super.onMove(x, y);
   }
 
   private boolean isTouchInPieceBounds(Piece piece, float touchX, float touchY) {
@@ -110,34 +112,38 @@ public class JigsawPiecesPicker extends PiecesPicker {
   }
 
   private boolean isTopNeighborIsInLockDistance(JigsawPiece piece, JigsawPiece topNeighbor) {
-    return (Math.abs(piece.getLeftTopCornerX() - topNeighbor.getLeftTopCornerX())
-        <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX
+    int pivotsDiffX = piece.getPivotX() - topNeighbor.getPivotX();
+    int pivotsDiffY = piece.getPivotY() - topNeighbor.getPivotY();
 
-        && (Math.abs(piece.getLeftTopCornerY() - topNeighbor.getLeftBottomCornerY())
-        <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX));
+    return (Math.abs(pivotsDiffX) <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX
+        && (pieceSquareHeight - PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX <= pivotsDiffY
+        && pivotsDiffY <= pieceSquareHeight + PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX));
   }
 
   private boolean isBottomNeighborIsInLockDistance(JigsawPiece piece, JigsawPiece bottomNeighbor) {
-    return (Math.abs(piece.getLeftBottomCornerX() - bottomNeighbor.getLeftTopCornerX())
-        <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX
+    int pivotsDiffX = piece.getPivotX() - bottomNeighbor.getPivotX();
+    int pivotsDiffY = bottomNeighbor.getPivotY() - piece.getPivotY();
 
-        && (Math.abs(piece.getLeftBottomCornerY() - bottomNeighbor.getLeftTopCornerY())
-        <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX));
+    return (Math.abs(pivotsDiffX) <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX
+        && (pieceSquareHeight - PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX <= pivotsDiffY
+        && pivotsDiffY <= pieceSquareHeight + PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX));
   }
 
   private boolean isLeftNeighborIsInLockDistance(JigsawPiece piece, JigsawPiece leftNeighbor) {
-    return (Math.abs(piece.getLeftTopCornerY() - leftNeighbor.getLeftTopCornerY())
-        <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX
+    int pivotsDiffX = piece.getPivotX() - leftNeighbor.getPivotX();
+    int pivotsDiffY = piece.getPivotY() - leftNeighbor.getPivotY();
 
-        && (Math.abs(piece.getLeftTopCornerX() - leftNeighbor.getRightTopCornerX())
-        <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX));
+    return (Math.abs(pivotsDiffY) <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX
+        && (pieceSquareWidth - PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX <= pivotsDiffX
+        && pivotsDiffX <= pieceSquareWidth + PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX));
   }
 
   private boolean isRightNeighborIsInLockDistance(JigsawPiece piece, JigsawPiece rightNeighbor) {
-    return (Math.abs(piece.getLeftTopCornerY() - rightNeighbor.getLeftTopCornerY())
-        <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX
+    int pivotsDiffX = rightNeighbor.getPivotX() - piece.getPivotX();
+    int pivotsDiffY = piece.getPivotY() - rightNeighbor.getPivotY();
 
-        && (Math.abs(piece.getRightTopCornerX() - rightNeighbor.getLeftTopCornerX())
-        <= PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX));
+    return (Math.abs(pivotsDiffY) <= PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX
+        && (pieceSquareWidth - PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX <= pivotsDiffX
+        && pivotsDiffX <= pieceSquareWidth + PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX));
   }
 }

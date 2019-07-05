@@ -4,9 +4,6 @@ import android.graphics.Bitmap;
 import com.example.alexberdnikov.puzzlepieces.view.Piece;
 
 public class JigsawPiece extends Piece {
-  final static int PIECE_CONVEX_CONCAVE_CUBIC_WIDTH = 16;
-  final static int PIECE_CONVEX_CUBIC_HEIGHT = 24;
-
   private enum SideConnection {NOT_AVAILABLE, FREE, CONNECTED}
 
   private SideConnection[] sidesStatuses = new SideConnection[4];
@@ -23,19 +20,33 @@ public class JigsawPiece extends Piece {
   final int puzzleColumnsCount;
   final int puzzleRowsCount;
 
+  private final int rPivotX;
+  private final int rPivotY;
+
+  private final int imageRectX;
+  private final int imageRectY;
+
   public JigsawPiece(
       Bitmap pieceImage,
-      SidesDescription sidesDescription,
-      int puzzleColumnsCount,
-      int puzzleRowsCount,
+      PiecesSidesGenerator piecesSidesGenerator,
       int number,
+      int pieceImageRectX,
+      int pieceImageRectY,
+      int rPivotX,
+      int rPivotY,
       int x,
       int y) {
 
     super(pieceImage, number, x, y);
-    this.sidesDescription = sidesDescription;
-    this.puzzleColumnsCount = puzzleColumnsCount;
-    this.puzzleRowsCount = puzzleRowsCount;
+    this.sidesDescription = piecesSidesGenerator.getSidesDescription(number);
+    this.puzzleColumnsCount = piecesSidesGenerator.getPuzzleColumnsCount();
+    this.puzzleRowsCount = piecesSidesGenerator.getPuzzleRowsCount();
+
+    this.rPivotX = rPivotX;
+    this.rPivotY = rPivotY;
+
+    this.imageRectX = pieceImageRectX;
+    this.imageRectY = pieceImageRectY;
 
     initSidesStatuses();
     detectNeighbors(puzzleColumnsCount, puzzleRowsCount);
@@ -144,89 +155,24 @@ public class JigsawPiece extends Piece {
     }
   }
 
-  int getLeftTopCornerX() {
-    return (sidesDescription.getSideForm(SidesDescription.SIDE_LEFT)
-        == SidesDescription.SIDE_FORM_CONVEX)
-        ? getX() + PIECE_CONVEX_CUBIC_HEIGHT : getX();
-  }
-
-  int getLeftTopCornerY() {
-    return (sidesDescription.getSideForm(SidesDescription.SIDE_TOP)
-        == SidesDescription.SIDE_FORM_CONVEX)
-        ? getY() + PIECE_CONVEX_CUBIC_HEIGHT : getY();
-  }
-
-  int getLeftBottomCornerX() {
-    return getLeftTopCornerX();
-  }
-
-  int getLeftBottomCornerY() {
-    int leftBottomCornerY = getY() + getPieceHeight();
-    return (sidesDescription.getSideForm(SidesDescription.SIDE_BOTTOM)
-        == SidesDescription.SIDE_FORM_CONVEX)
-        ? leftBottomCornerY - PIECE_CONVEX_CUBIC_HEIGHT : leftBottomCornerY;
-  }
-
-  int getRightTopCornerX() {
-    int rightTopCornerX = getX() + getPieceWidth();
-    return (sidesDescription.getSideForm(SidesDescription.SIDE_RIGHT)
-        == SidesDescription.SIDE_FORM_CONVEX)
-        ? rightTopCornerX - PIECE_CONVEX_CUBIC_HEIGHT : rightTopCornerX;
-  }
-
-  private int getSquareWidth() {
-    int width = getPieceWidth();
-    if (sidesDescription.getSideForm(SidesDescription.SIDE_LEFT)
-        == SidesDescription.SIDE_FORM_CONVEX) {
-      width -= PIECE_CONVEX_CUBIC_HEIGHT;
-    }
-
-    if (sidesDescription.getSideForm(SidesDescription.SIDE_RIGHT)
-        == SidesDescription.SIDE_FORM_CONVEX) {
-      width -= PIECE_CONVEX_CUBIC_HEIGHT;
-    }
-
-    return width;
-  }
-
-  private int getSquareHeight() {
-    int height = getPieceHeight();
-    if (sidesDescription.getSideForm(SidesDescription.SIDE_TOP)
-        == SidesDescription.SIDE_FORM_CONVEX) {
-      height -= PIECE_CONVEX_CUBIC_HEIGHT;
-    }
-
-    if (sidesDescription.getSideForm(SidesDescription.SIDE_BOTTOM)
-        == SidesDescription.SIDE_FORM_CONVEX) {
-      height -= PIECE_CONVEX_CUBIC_HEIGHT;
-    }
-
-    return height;
-  }
-
-  int getTopSideDescription() {
-    return sidesDescription.getSideForm(SidesDescription.SIDE_TOP);
-  }
-
-  int getLeftSideDescription() {
-    return sidesDescription.getSideForm(SidesDescription.SIDE_LEFT);
-  }
-
   @Override public int[] getPieceOffsetInPuzzle() {
-    int pieceNumberInRow = getNumber() % puzzleColumnsCount;
-    int pieceInPuzzleOffsetX = getSquareWidth() * pieceNumberInRow;
-    if (getLeftSideDescription() == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceInPuzzleOffsetX -= JigsawPiece.PIECE_CONVEX_CUBIC_HEIGHT;
-    }
+    return new int[] { imageRectX, imageRectY };
+  }
 
-    int pieceNumberInColumn = getNumber() / puzzleColumnsCount;
-    int pieceInPuzzleOffsetY = getSquareHeight() * pieceNumberInColumn;
+  int getRelativePivotX() {
+    return rPivotX;
+  }
 
-    if (getTopSideDescription() == JigsawPiece.SidesDescription.SIDE_FORM_CONVEX) {
-      pieceInPuzzleOffsetY -= JigsawPiece.PIECE_CONVEX_CUBIC_HEIGHT;
-    }
+  int getRelativePivotY() {
+    return rPivotY;
+  }
 
-    return new int[] { pieceInPuzzleOffsetX, pieceInPuzzleOffsetY };
+  int getPivotX() {
+    return getX() + getRelativePivotX();
+  }
+
+  int getPivotY() {
+    return getY() + getRelativePivotY();
   }
 
   /**

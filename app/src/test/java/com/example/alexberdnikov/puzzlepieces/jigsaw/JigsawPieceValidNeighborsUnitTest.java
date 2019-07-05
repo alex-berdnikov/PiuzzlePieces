@@ -32,10 +32,12 @@ public class JigsawPieceValidNeighborsUnitTest {
     for (int i = 0; i < generator.getPiecesCount(); i++) {
       JigsawPiece piece = new JigsawPiece(
           mockedImage,
-          generator.getSidesDescription(i),
-          generator.getPuzzleColumnsCount(),
-          generator.getPuzzleRowsCount(),
+          generator,
           i,
+          0,
+          0,
+          0,
+          0,
           0,
           0);
 
