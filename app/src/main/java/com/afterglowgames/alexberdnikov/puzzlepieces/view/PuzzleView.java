@@ -2,15 +2,13 @@ package com.afterglowgames.alexberdnikov.puzzlepieces.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Message;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.MotionEvent;
-import android.view.View;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import androidx.annotation.Nullable;
 import com.afterglowgames.alexberdnikov.puzzlepieces.R;
 
 public class PuzzleView extends SurfaceView implements SurfaceHolder.Callback {
@@ -18,7 +16,6 @@ public class PuzzleView extends SurfaceView implements SurfaceHolder.Callback {
   private Puzzle puzzle;
   private SurfaceHolder surfaceHolder;
   private DrawThread drawThread;
-  private long lastUpdateTimestamp;
 
   public PuzzleView(Context context) {
     super(context);
@@ -44,8 +41,8 @@ public class PuzzleView extends SurfaceView implements SurfaceHolder.Callback {
   }
 
   private void loadBitmap() {
-    new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
-    //new LoadBitmapTask(getResources(), this).execute(R.drawable.emma_stone);
+    //new LoadBitmapTask(getResources(), this).execute(R.drawable.autumn_1);
+    new LoadBitmapTask(getResources(), this).execute(R.drawable.emma_stone);
   }
 
   private void setupSurface() {
@@ -78,8 +75,10 @@ public class PuzzleView extends SurfaceView implements SurfaceHolder.Callback {
   }
 
   private void updateView() {
-    Message message = drawThread.getHandler().obtainMessage(0);
-    drawThread.getHandler().sendMessage(message);
+    if (drawThread.getHandler() != null) {
+      Message message = drawThread.getHandler().obtainMessage(0);
+      drawThread.getHandler().sendMessage(message);
+    }
   }
 
   @Override public boolean performClick() {

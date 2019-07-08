@@ -2,13 +2,13 @@ package com.afterglowgames.alexberdnikov.puzzlepieces;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPuzzle;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.PuzzleView;
+import com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPuzzle;
 
 public class MainActivity extends AppCompatActivity {
 

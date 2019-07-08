@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 public class JigsawPiecesPicker extends PiecesPicker {
-  private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 20;
-  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 20;
+  private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 30;
+  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 30;
 
   private int pieceSquareWidth;
   private int pieceSquareHeight;
@@ -52,10 +52,9 @@ public class JigsawPiecesPicker extends PiecesPicker {
       }
 
       draggedPieceGroup.mergeWith(group);
+      draggedPieceGroup.alignGroupByPiece(group.getPieces().get(0));
       getPiecesGroups().remove(group);
     }
-
-    draggedPieceGroup.alignGroupByPiece(draggedPiece);
   }
 
   @Override protected JigsawPiecesGroup createPieceGroup(Piece piece) {

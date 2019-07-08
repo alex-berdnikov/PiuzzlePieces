@@ -10,6 +10,7 @@ import android.view.SurfaceHolder;
 
 public class DrawThread extends HandlerThread {
   private final static String THREAD_NAME = DrawThread.class.getSimpleName();
+  public final static Object lock = new Object();
 
   private final SurfaceHolder surfaceHolder;
   private Puzzle puzzle;
@@ -30,6 +31,9 @@ public class DrawThread extends HandlerThread {
         processMessage(message);
       }
     };
+
+    // Draw immediately
+    handler.sendMessage(Message.obtain());
   }
 
   @SuppressWarnings("unchecked")
@@ -38,8 +42,10 @@ public class DrawThread extends HandlerThread {
       canvas = surfaceHolder.getSurface().lockCanvas(null);
       canvas.drawColor(Color.WHITE);
 
-      for (Piece piece : puzzle.getPieces()) {
-        canvas.drawBitmap(piece.getPieceImage(), piece.getX(), piece.getY(), null);
+      synchronized (lock) {
+        for (Piece piece : puzzle.getPieces()) {
+          canvas.drawBitmap(piece.getPieceImage(), piece.getX(), piece.getY(), null);
+        }
       }
 
       surfaceHolder.getSurface().unlockCanvasAndPost(canvas);

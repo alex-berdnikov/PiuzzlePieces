@@ -1,7 +1,10 @@
 package com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw;
 
+import com.afterglowgames.alexberdnikov.puzzlepieces.view.DrawThread;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.Piece;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.PiecesGroup;
+
+import static com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece.NEIGHBOR_NOT_AVAILABLE;
 
 public class JigsawPiecesGroup extends PiecesGroup {
 
@@ -25,8 +28,8 @@ public class JigsawPiecesGroup extends PiecesGroup {
     int pieceInPuzzleOffsetX = pieceOffset[0];
     int pieceInPuzzleOffsetY = pieceOffset[1];
 
-    int entirePuzzleOffsetX = piece.getX() - pieceInPuzzleOffsetX;
-    int entirePuzzleOffsetY = piece.getY() - pieceInPuzzleOffsetY;
+    int entirePuzzleOffsetX = pieceToAlignWith.getX() - pieceInPuzzleOffsetX;
+    int entirePuzzleOffsetY = pieceToAlignWith.getY() - pieceInPuzzleOffsetY;
 
     for (Piece groupPiece : getPieces()) {
       JigsawPiece jigsawPiece = (JigsawPiece) groupPiece;
@@ -49,6 +52,15 @@ public class JigsawPiecesGroup extends PiecesGroup {
     setTopMostPiece();
     setRightMostPiece();
     setBottomMostPiece();
+  }
+
+  private Piece getPieceByNumber(int number) {
+    for (Piece piece : getPieces()) {
+      if (piece.getNumber() == number) {
+        return piece;
+      }
+    }
+    throw new IllegalArgumentException(String.format("There's no piece with number %d", number));
   }
 
   private void setTopMostPiece() {
@@ -91,7 +103,7 @@ public class JigsawPiecesGroup extends PiecesGroup {
   }
 
   @Override public JigsawPiece getLeftMostPiece() {
-   return leftMostPiece;
+    return leftMostPiece;
   }
 
   @Override public JigsawPiece getRightMostPiece() {
@@ -100,13 +112,5 @@ public class JigsawPiecesGroup extends PiecesGroup {
 
   @Override public JigsawPiece getBottomMostPiece() {
     return bottomMostPiece;
-  }
-
-  @Override public int getWidth() {
-    return 0;
-  }
-
-  @Override public int getHeight() {
-    return 0;
   }
 }

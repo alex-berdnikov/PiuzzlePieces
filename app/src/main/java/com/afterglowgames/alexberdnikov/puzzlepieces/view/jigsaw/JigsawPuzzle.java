@@ -17,6 +17,7 @@ import com.afterglowgames.alexberdnikov.puzzlepieces.view.Puzzle;
 public class JigsawPuzzle extends Puzzle {
   private final boolean DRAW_NUMBERS_ON_PIECES = true;
   private final boolean DRAW_PIVOTS_ON_PIECES = false;
+
   private int pieceSquareWidth;
   private int pieceSquareHeight;
 
@@ -114,13 +115,14 @@ public class JigsawPuzzle extends Puzzle {
   }
 
   @Override protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight) {
-    return new JigsawPiecesPicker(getPieces(), pieceSquareWidth, pieceSquareHeight, screenWidth, screenHeight);
+    return new JigsawPiecesPicker(getPieces(), pieceSquareWidth, pieceSquareHeight, screenWidth,
+        screenHeight);
   }
 
   @Override public void generate() {
     for (int i = 0; i < piecesSidesGenerator.getPiecesCount(); i++) {
       // Just put the pieces consequently
-      getPieces().add(createPiece(i, (i % 16) * (96 + 18) + 40, (i / 16) * (96 + 18) + 40));
+      getPieces().add(createPiece(i, (i % 5) * 150 + 40, (i / 5) * 150 + 40));
     }
     onGenerated();
   }

@@ -35,9 +35,11 @@ public abstract class PiecesPicker {
       capturedGroup = getPieceGroup(capturedPiece);
 
       // Put the piece to the end of the list so it'll be drawn on top of others
-      for (Piece piece : capturedGroup.getPieces()) {
-        pieces.remove(piece);
-        pieces.add(piece);
+      synchronized (DrawThread.lock) {
+        for (Piece piece : capturedGroup.getPieces()) {
+          pieces.remove(piece);
+          pieces.add(piece);
+        }
       }
 
       // Put the group to the beginning of the list so it'll be captured first, if it overlays any

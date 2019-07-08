@@ -43,15 +43,23 @@ public abstract class Puzzle {
   }
 
   void onTouchStart(float x, float y) {
-    piecesPicker.onTouchStart(x, y);
+    if (piecesPicker != null) {
+      piecesPicker.onTouchStart(x, y);
+    }
   }
 
   void onMove(float x, float y) {
-    piecesPicker.onMove(x, y);
+    if (piecesPicker != null) {
+      synchronized (DrawThread.lock) {
+        piecesPicker.onMove(x, y);
+      }
+    }
   }
 
   void onTouchEnd(float x, float y) {
-    piecesPicker.onTouchEnd(x, y);
+    if (piecesPicker != null) {
+      piecesPicker.onTouchEnd(x, y);
+    }
   }
 
   protected void onGenerated() {

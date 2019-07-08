@@ -52,8 +52,4 @@ abstract public class PiecesGroup {
   abstract public Piece getBottomMostPiece();
 
   abstract public Piece getLeftMostPiece();
-
-  abstract public int getWidth();
-
-  abstract public int getHeight();
 }
