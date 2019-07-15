@@ -19,6 +19,8 @@ public abstract class PiecesPicker {
   private int screenWidth;
   private int screenHeight;
 
+  private EventsListener eventsListener;
+
   public PiecesPicker(List<Piece> pieces, int screenWidth, int screenHeight) {
     this.pieces = pieces;
     for (Piece piece : pieces) {
@@ -103,7 +105,10 @@ public abstract class PiecesPicker {
 
   void onTouchEnd(float x, float y) {
     if (capturedPiece != null) {
-      handlePiecesConnections(capturedPiece);
+      int pieceNumber = handlePiecesConnections(capturedPiece);
+      if (pieceNumber != -1 && eventsListener != null) {
+        eventsListener.onPiecesGroupUpdated(getPieceGroup(capturedPiece));
+      }
     }
 
     capturedPiece = null;
@@ -112,7 +117,7 @@ public abstract class PiecesPicker {
     prevY = 0;
   }
 
-  protected List<PiecesGroup> getPiecesGroups() {
+  public List<PiecesGroup> getPiecesGroups() {
     return piecesGroups;
   }
 
@@ -145,9 +150,25 @@ public abstract class PiecesPicker {
     throw new IllegalArgumentException(String.format("There's no piece with number %d", number));
   }
 
+  public void setEventsListener(
+      EventsListener eventsListener) {
+    this.eventsListener = eventsListener;
+  }
+
   abstract protected Piece getCapturedPieceFromCoordinates(float touchX, float touchY);
 
-  abstract protected void handlePiecesConnections(Piece draggedPiece);
+  /**
+   * Returns a number of the first piece in the new group we get after merging.
+   * If no groups were merged returns -1.
+   *
+   * @param draggedPiece a piece user dragged
+   * @return piece number
+   */
+  abstract protected int handlePiecesConnections(Piece draggedPiece);
 
   abstract protected PiecesGroup createPieceGroup(Piece piece);
+
+  public interface EventsListener {
+    void onPiecesGroupUpdated(PiecesGroup newGroup);
+  }
 }

@@ -1,5 +1,6 @@
 package com.afterglowgames.alexberdnikov.puzzlepieces.view;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
@@ -36,13 +37,20 @@ public class DrawThread extends HandlerThread {
     handler.sendMessage(Message.obtain());
   }
 
-  @SuppressWarnings("unchecked")
   private void processMessage(Message message) {
     synchronized (surfaceHolder) {
       canvas = surfaceHolder.getSurface().lockCanvas(null);
       canvas.drawColor(Color.WHITE);
 
       synchronized (lock) {
+        for (Piece piece : puzzle.getPieces()) {
+          Bitmap shadowBitmap = puzzle.getShadows().get(piece.getNumber());
+          if (shadowBitmap == null) {
+            continue;
+          }
+          canvas.drawBitmap(shadowBitmap, piece.getX(), piece.getY(), null);
+        }
+
         for (Piece piece : puzzle.getPieces()) {
           canvas.drawBitmap(piece.getPieceImage(), piece.getX(), piece.getY(), null);
         }

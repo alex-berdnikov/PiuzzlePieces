@@ -1,10 +1,7 @@
 package com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw;
 
-import com.afterglowgames.alexberdnikov.puzzlepieces.view.DrawThread;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.Piece;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.PiecesGroup;
-
-import static com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw.JigsawPiece.NEIGHBOR_NOT_AVAILABLE;
 
 public class JigsawPiecesGroup extends PiecesGroup {
 

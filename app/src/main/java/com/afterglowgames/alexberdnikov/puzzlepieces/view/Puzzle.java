@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Size;
 import com.afterglowgames.alexberdnikov.puzzlepieces.utils.ScreenUtils;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Puzzle {
   private Bitmap imageBitmap;
@@ -13,6 +15,7 @@ public abstract class Puzzle {
   private Size screenSize;
 
   private List<Piece> pieces = new LinkedList<>();
+  private Map<Integer, Bitmap> piecesShadows = new HashMap<>();
   private PiecesPicker piecesPicker;
 
   public Puzzle(Context context) {
@@ -42,6 +45,10 @@ public abstract class Puzzle {
     return pieces;
   }
 
+  protected Map<Integer, Bitmap> getShadows() {
+    return piecesShadows;
+  }
+
   void onTouchStart(float x, float y) {
     if (piecesPicker != null) {
       piecesPicker.onTouchStart(x, y);
@@ -64,9 +71,27 @@ public abstract class Puzzle {
 
   protected void onGenerated() {
     piecesPicker = createPiecesPicker(screenSize.getWidth(), screenSize.getHeight());
+    createPiecesShadows();
+  }
+
+  private void createPiecesShadows() {
+    List<PiecesGroup> piecesGroups = piecesPicker.getPiecesGroups();
+    for (int i = 0; i < piecesGroups.size(); i++) {
+      PiecesGroup group = piecesGroups.get(i);
+      getShadows().put(group.getPieces().get(0).getNumber(),
+          createPiecesGroupShadow(piecesGroups.get(i)));
+    }
+  }
+
+  protected PiecesPicker getPiecesPicker() {
+    return piecesPicker;
   }
 
   abstract public void generate();
+
   abstract protected Piece createPiece(int number, int x, int y);
+
   abstract protected PiecesPicker createPiecesPicker(int screenWidth, int screenHeight);
+
+  abstract protected Bitmap createPiecesGroupShadow(PiecesGroup piecesGroup);
 }

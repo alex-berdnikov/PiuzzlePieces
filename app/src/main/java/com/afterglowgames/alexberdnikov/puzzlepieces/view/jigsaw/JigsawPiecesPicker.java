@@ -3,14 +3,13 @@ package com.afterglowgames.alexberdnikov.puzzlepieces.view.jigsaw;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.Piece;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.PiecesGroup;
 import com.afterglowgames.alexberdnikov.puzzlepieces.view.PiecesPicker;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class JigsawPiecesPicker extends PiecesPicker {
-  private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 30;
-  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 30;
+  private final int PIECE_HORIZONTAL_LOCK_DISTANCE_THRESHOLD_PX = 24;
+  private final int PIECE_VERTICAL_LOCK_DISTANCE_THRESHOLD_PX = 24;
 
   private int pieceSquareWidth;
   private int pieceSquareHeight;
@@ -39,22 +38,28 @@ public class JigsawPiecesPicker extends PiecesPicker {
         && piece.getY() <= touchY && touchY <= piece.getY() + piece.getPieceHeight();
   }
 
-  @Override protected void handlePiecesConnections(Piece draggedPiece) {
+  @Override protected int handlePiecesConnections(Piece draggedPiece) {
     PiecesGroup draggedPieceGroup = getGroupOfPiece(draggedPiece);
     Set<JigsawPiecesGroup> groupsToBeMerged = new HashSet<>();
     for (Piece piece : draggedPieceGroup.getPieces()) {
       groupsToBeMerged.addAll(handleLocksWithNeighbors((JigsawPiece) piece));
     }
 
-    for (JigsawPiecesGroup group : groupsToBeMerged) {
-      if (group == draggedPieceGroup) {
-        continue;
+    if (0 < groupsToBeMerged.size()) {
+      for (JigsawPiecesGroup group : groupsToBeMerged) {
+        if (group == draggedPieceGroup) {
+          continue;
+        }
+
+        draggedPieceGroup.mergeWith(group);
+        draggedPieceGroup.alignGroupByPiece(group.getPieces().get(0));
+        getPiecesGroups().remove(group);
       }
 
-      draggedPieceGroup.mergeWith(group);
-      draggedPieceGroup.alignGroupByPiece(group.getPieces().get(0));
-      getPiecesGroups().remove(group);
+      return draggedPieceGroup.getPieces().get(0).getNumber();
     }
+
+    return -1;
   }
 
   @Override protected JigsawPiecesGroup createPieceGroup(Piece piece) {
